@@ -1,1048 +1,868 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="description" content="NovaStore - Quality products at great prices.">
 <title>NovaStore | Quality Products</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f5f6f8;color:#222}
+button,input{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none;color:inherit}
+
+.header{background:#111827;color:#fff;position:sticky;top:0;z-index:20}
+.top{max-width:1200px;margin:auto;padding:16px 20px;display:flex;align-items:center;gap:18px}
+.logo{font-size:25px;font-weight:800;color:#fff;white-space:nowrap}
+.logo span{color:#22c55e}
+
+.search{flex:1;display:flex;background:#fff;border-radius:8px;overflow:hidden}
+.search input{width:100%;padding:12px;border:0;outline:0}
+.search button{padding:0 16px;background:#22c55e;color:#fff}
+
+.nav{display:flex;gap:10px}
+.nav button{background:#1f2937;color:#fff;padding:10px 12px;border-radius:7px}
+.nav button:hover{background:#374151}
+.badge{background:#ef4444;border-radius:20px;padding:2px 7px;font-size:11px}
+
+.hero{background:linear-gradient(135deg,#111827,#1f2937);color:white;padding:60px 20px}
+.hero-inner{max-width:1200px;margin:auto}
+.hero h1{font-size:42px;margin-bottom:12px}
+.hero p{font-size:18px;color:#d1d5db;max-width:600px;line-height:1.6}
+.hero button{margin-top:22px;background:#22c55e;color:#fff;padding:13px 22px;border-radius:8px;font-weight:bold}
+
+.section{max-width:1200px;margin:auto;padding:35px 20px}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.section-title h2{font-size:25px}
+
+.categories{display:flex;gap:10px;overflow:auto;padding-bottom:8px}
+.cat{padding:10px 16px;border-radius:25px;background:#fff;border:1px solid #ddd;white-space:nowrap}
+.cat.active,.cat:hover{background:#111827;color:#fff}
+
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px #00000012;border:1px solid #eee}
+
+.pic{height:190px;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-size:75px}
+
+.info{padding:15px}
+.info h3{font-size:17px;margin-bottom:8px}
+.info p{color:#666;font-size:13px;min-height:34px}
+
+.price{font-weight:800;font-size:19px;margin:12px 0}
+.add{width:100%;background:#111827;color:#fff;padding:11px;border-radius:7px}
+.add:hover{background:#22c55e}
+.old{font-size:13px;color:#999;text-decoration:line-through;margin-left:6px}
+
+.empty{text-align:center;padding:30px;grid-column:1/-1;color:#777}
+
+footer{background:#111827;color:#d1d5db;padding:40px 20px;margin-top:20px}
+.footer-inner{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+footer h3{color:#fff;margin-bottom:12px}
+footer p{line-height:1.8;font-size:14px}
+
+.modal-bg{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;width:100%;max-width:430px;border-radius:12px;padding:24px;position:relative;max-height:90vh;overflow:auto}
+.close{position:absolute;right:15px;top:12px;background:#eee;width:32px;height:32px;border-radius:50%}
+.modal h2{margin-bottom:18px}
+
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:13px;margin-bottom:6px}
+.form-group input{width:100%;padding:12px;border:1px solid #ccc;border-radius:7px;outline:0}
+
+.form-btn{width:100%;padding:12px;background:#111827;color:#fff;border-radius:7px;margin-top:5px}
+.form-btn:hover{background:#22c55e}
+
+.switch{margin-top:15px;text-align:center;font-size:14px}
+.switch a{color:#16a34a;font-weight:bold;cursor:pointer}
+
+.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;align-items:center}
+.cart-icon{font-size:35px}
+.cart-details{flex:1}
+
+.qty{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty button{width:27px;height:27px;border-radius:5px;background:#eee}
+
+.cart-total{font-size:20px;font-weight:bold;text-align:right;margin:18px 0}
+.checkout{width:100%;padding:13px;background:#22c55e;color:#fff;border-radius:7px;font-weight:bold}
+
+.account{background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:8px;margin-bottom:15px}
+
+@media(max-width:900px){
+.products{grid-template-columns:repeat(3,1fr)}
 }
 
-body{
-    background:#f5f6f8;
-    color:#222;
-}
-
-header{
-    background:#111827;
-    color:white;
-    padding:15px 5%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
-    position:sticky;
-    top:0;
-    z-index:100;
-}
-
-.logo{
-    font-size:24px;
-    font-weight:bold;
-}
-
-.logo span{
-    color:#22c55e;
-}
-
-.search{
-    flex:1;
-    max-width:500px;
-}
-
-.search input{
-    width:100%;
-    padding:12px 15px;
-    border:none;
-    border-radius:8px;
-    outline:none;
-}
-
-.header-buttons{
-    display:flex;
-    gap:8px;
-}
-
-button{
-    cursor:pointer;
-    border:none;
-}
-
-.header-buttons button{
-    padding:10px 13px;
-    border-radius:7px;
-    background:#22c55e;
-    color:white;
-}
-
-.hero{
-    padding:60px 5%;
-    background:linear-gradient(135deg,#111827,#1f2937);
-    color:white;
-    text-align:center;
-}
-
-.hero h1{
-    font-size:42px;
-    margin-bottom:15px;
-}
-
-.hero p{
-    font-size:18px;
-    margin-bottom:25px;
-}
-
-.hero button{
-    background:#22c55e;
-    color:white;
-    padding:14px 25px;
-    border-radius:8px;
-    font-size:16px;
-}
-
-.categories{
-    padding:30px 5%;
-    text-align:center;
-}
-
-.categories h2{
-    margin-bottom:20px;
-}
-
-.category-buttons{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-}
-
-.category-buttons button{
-    padding:10px 18px;
-    background:white;
-    border:1px solid #ddd;
-    border-radius:20px;
-}
-
-.category-buttons button:hover{
-    background:#22c55e;
-    color:white;
-}
-
-.products{
-    padding:20px 5% 50px;
-}
-
-.products h2{
-    margin-bottom:25px;
-    text-align:center;
-}
-
-.product-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:20px;
-}
-
-.product{
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
-    transition:.2s;
-}
-
-.product:hover{
-    transform:translateY(-5px);
-}
-
-.product-image{
-    height:190px;
-    background:#e5e7eb;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:70px;
-}
-
-.product-info{
-    padding:15px;
-}
-
-.product-info h3{
-    margin-bottom:8px;
-}
-
-.price{
-    color:#16a34a;
-    font-size:20px;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-.product-info button{
-    width:100%;
-    padding:11px;
-    background:#111827;
-    color:white;
-    border-radius:7px;
-}
-
-.product-info button:hover{
-    background:#22c55e;
-}
-
-footer{
-    background:#111827;
-    color:white;
-    padding:40px 5%;
-    text-align:center;
-}
-
-footer p{
-    margin:8px;
-    color:#bbb;
-}
-
-/* MODALS */
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.65);
-    z-index:200;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
-
-.modal-box{
-    background:white;
-    width:100%;
-    max-width:420px;
-    border-radius:12px;
-    padding:25px;
-    position:relative;
-}
-
-.close{
-    position:absolute;
-    right:18px;
-    top:15px;
-    font-size:24px;
-    cursor:pointer;
-}
-
-.modal-box h2{
-    margin-bottom:20px;
-}
-
-.modal-box input{
-    width:100%;
-    padding:12px;
-    margin:8px 0;
-    border:1px solid #ddd;
-    border-radius:7px;
-}
-
-.modal-box .submit{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    background:#22c55e;
-    color:white;
-    border-radius:7px;
-}
-
-.switch{
-    text-align:center;
-    margin-top:15px;
-    color:#555;
-}
-
-.switch span{
-    color:#16a34a;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-/* CART */
-
-.cart-items{
-    max-height:300px;
-    overflow:auto;
-}
-
-.cart-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:12px 0;
-    border-bottom:1px solid #ddd;
-}
-
-.cart-item button{
-    background:#ef4444;
-    color:white;
-    padding:5px 8px;
-    border-radius:5px;
-}
-
-.cart-total{
-    font-size:20px;
-    font-weight:bold;
-    margin-top:20px;
-}
-
-.checkout{
-    width:100%;
-    padding:13px;
-    background:#22c55e;
-    color:white;
-    margin-top:15px;
-    border-radius:7px;
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-    header{
-        flex-wrap:wrap;
-    }
-
-    .logo{
-        width:100%;
-        text-align:center;
-    }
-
-    .search{
-        order:3;
-        max-width:none;
-        width:100%;
-    }
-
-    .header-buttons{
-        margin:auto;
-    }
-
-    .hero h1{
-        font-size:32px;
-    }
-
-    .hero{
-        padding:45px 20px;
-    }
+@media(max-width:650px){
+.top{flex-wrap:wrap}
+.logo{width:100%}
+.search{order:3;flex-basis:100%}
+.nav{position:absolute;right:10px;top:12px}
+.hero h1{font-size:32px}
+.products{grid-template-columns:repeat(2,1fr);gap:12px}
+.pic{height:150px;font-size:58px}
+.info{padding:11px}
+.footer-inner{grid-template-columns:1fr}
+.section{padding:25px 12px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<header class="header">
+<div class="top">
 
-    <div class="logo">
-        Nova<span>Store</span>
-    </div>
+<a class="logo" href="#">
+Nova<span>Store</span>
+</a>
 
-    <div class="search">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search products..."
-            onkeyup="searchProducts()"
-        >
-    </div>
+<div class="search">
+<input id="searchInput" type="search" placeholder="Search products...">
+<button onclick="searchProducts()">Search</button>
+</div>
 
-    <div class="header-buttons">
-        <button onclick="openLogin()">Login</button>
-        <button onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
-    </div>
+<div class="nav">
+<button onclick="openLogin()">👤 <span id="accountText">Login</span></button>
+<button onclick="openCart()">🛒 <span class="badge" id="cartCount">0</span></button>
+</div>
 
+</div>
 </header>
 
-
 <section class="hero">
+<div class="hero-inner">
 
-    <h1>Welcome to NovaStore</h1>
+<h1>Welcome to NovaStore</h1>
 
-    <p>
-        Quality products at affordable prices.
-    </p>
+<p>
+Discover quality products, great prices and a simple shopping experience.
+</p>
 
-    <button onclick="document.getElementById('products').scrollIntoView()">
-        Shop Now
-    </button>
+<button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+Shop Now
+</button>
 
+</div>
 </section>
 
+<section class="section">
 
-<section class="categories">
+<div class="section-title">
+<h2>Categories</h2>
+</div>
 
-    <h2>Shop By Category</h2>
+<div class="categories">
 
-    <div class="category-buttons">
+<button class="cat active" onclick="filterCategory('All',this)">
+All
+</button>
 
-        <button onclick="filterProducts('all')">
-            All
-        </button>
+<button class="cat" onclick="filterCategory('Electronics',this)">
+Electronics
+</button>
 
-        <button onclick="filterProducts('electronics')">
-            Electronics
-        </button>
+<button class="cat" onclick="filterCategory('Fashion',this)">
+Fashion
+</button>
 
-        <button onclick="filterProducts('fashion')">
-            Fashion
-        </button>
+<button class="cat" onclick="filterCategory('Home',this)">
+Home
+</button>
 
-        <button onclick="filterProducts('home')">
-            Home
-        </button>
+<button class="cat" onclick="filterCategory('Accessories',this)">
+Accessories
+</button>
 
-        <button onclick="filterProducts('beauty')">
-            Beauty
-        </button>
-
-        <button onclick="filterProducts('accessories')">
-            Accessories
-        </button>
-
-    </div>
-
+</div>
 </section>
 
+<section class="section" id="products">
 
-<section class="products" id="products">
+<div class="section-title">
+<h2>Featured Products</h2>
+</div>
 
-    <h2>Featured Products</h2>
-
-    <div class="product-grid" id="productGrid">
-
-
-        <div class="product" data-category="electronics">
-
-            <div class="product-image">
-                📱
-            </div>
-
-            <div class="product-info">
-
-                <h3>Smartphone</h3>
-
-                <p>Modern smartphone with powerful features.</p>
-
-                <div class="price">
-                    ₦150,000
-                </div>
-
-                <button onclick="addToCart('Smartphone',150000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="electronics">
-
-            <div class="product-image">
-                🎧
-            </div>
-
-            <div class="product-info">
-
-                <h3>Wireless Headphones</h3>
-
-                <p>Clear sound and comfortable design.</p>
-
-                <div class="price">
-                    ₦35,000
-                </div>
-
-                <button onclick="addToCart('Wireless Headphones',35000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="electronics">
-
-            <div class="product-image">
-                ⌚
-            </div>
-
-            <div class="product-info">
-
-                <h3>Smart Watch</h3>
-
-                <p>Track your activities and notifications.</p>
-
-                <div class="price">
-                    ₦45,000
-                </div>
-
-                <button onclick="addToCart('Smart Watch',45000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="fashion">
-
-            <div class="product-image">
-                👟
-            </div>
-
-            <div class="product-info">
-
-                <h3>Running Sneakers</h3>
-
-                <p>Comfortable shoes for everyday activities.</p>
-
-                <div class="price">
-                    ₦28,000
-                </div>
-
-                <button onclick="addToCart('Running Sneakers',28000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="fashion">
-
-            <div class="product-image">
-                👕
-            </div>
-
-            <div class="product-info">
-
-                <h3>Premium T-Shirt</h3>
-
-                <p>Simple and comfortable everyday wear.</p>
-
-                <div class="price">
-                    ₦15,000
-                </div>
-
-                <button onclick="addToCart('Premium T-Shirt',15000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="fashion">
-
-            <div class="product-image">
-                🧢
-            </div>
-
-            <div class="product-info">
-
-                <h3>Classic Cap</h3>
-
-                <p>Stylish cap for casual outfits.</p>
-
-                <div class="price">
-                    ₦8,000
-                </div>
-
-                <button onclick="addToCart('Classic Cap',8000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="home">
-
-            <div class="product-image">
-                🛋️
-            </div>
-
-            <div class="product-info">
-
-                <h3>Modern Sofa</h3>
-
-                <p>Comfortable furniture for your home.</p>
-
-                <div class="price">
-                    ₦250,000
-                </div>
-
-                <button onclick="addToCart('Modern Sofa',250000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="home">
-
-            <div class="product-image">
-                💡
-            </div>
-
-            <div class="product-info">
-
-                <h3>LED Lamp</h3>
-
-                <p>Bright and energy-efficient lighting.</p>
-
-                <div class="price">
-                    ₦12,000
-                </div>
-
-                <button onclick="addToCart('LED Lamp',12000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="beauty">
-
-            <div class="product-image">
-                🧴
-            </div>
-
-            <div class="product-info">
-
-                <h3>Body Care Set</h3>
-
-                <p>Daily care products for your routine.</p>
-
-                <div class="price">
-                    ₦18,000
-                </div>
-
-                <button onclick="addToCart('Body Care Set',18000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="accessories">
-
-            <div class="product-image">
-                🎒
-            </div>
-
-            <div class="product-info">
-
-                <h3>Travel Backpack</h3>
-
-                <p>Durable backpack for school and travel.</p>
-
-                <div class="price">
-                    ₦22,000
-                </div>
-
-                <button onclick="addToCart('Travel Backpack',22000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="accessories">
-
-            <div class="product-image">
-                🕶️
-            </div>
-
-            <div class="product-info">
-
-                <h3>Fashion Sunglasses</h3>
-
-                <p>Stylish sunglasses for everyday use.</p>
-
-                <div class="price">
-                    ₦10,000
-                </div>
-
-                <button onclick="addToCart('Fashion Sunglasses',10000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product" data-category="electronics">
-
-            <div class="product-image">
-                💻
-            </div>
-
-            <div class="product-info">
-
-                <h3>Laptop</h3>
-
-                <p>Fast laptop for work, study and entertainment.</p>
-
-                <div class="price">
-                    ₦450,000
-                </div>
-
-                <button onclick="addToCart('Laptop',450000)">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-
-    </div>
+<div class="products" id="productGrid"></div>
 
 </section>
-
 
 <footer>
 
-    <h2>NovaStore</h2>
+<div class="footer-inner">
 
-    <p>Your trusted online shopping store.</p>
+<div>
+<h3>NovaStore</h3>
+<p>Quality products for everyday life.</p>
+</div>
 
-    <p>© 2026 NovaStore. All rights reserved.</p>
+<div>
+<h3>Customer Service</h3>
+<p>
+Contact us through your preferred channel for help with orders and products.
+</p>
+</div>
 
+<div>
+<h3>Quick Links</h3>
+<p>
+<a href="#products">Products</a><br>
+<a href="#" onclick="openCart();return false">Shopping Cart</a><br>
+<a href="#" onclick="openLogin();return false">My Account</a>
+</p>
+</div>
+
+</div>
 </footer>
 
+<!-- LOGIN / REGISTER -->
 
-<!-- LOGIN MODAL -->
+<div class="modal-bg" id="loginModal">
 
-<div class="modal" id="loginModal">
+<div class="modal">
 
-    <div class="modal-box">
+<button class="close" onclick="closeModal('loginModal')">
+×
+</button>
 
-        <span class="close" onclick="closeModal('loginModal')">
-            ×
-        </span>
+<h2 id="authTitle">Login to NovaStore</h2>
 
-        <h2>Login</h2>
+<div id="loggedInBox" style="display:none"></div>
 
-        <input
-            type="email"
-            placeholder="Email address"
-        >
+<form id="authForm" onsubmit="handleAuth(event)">
 
-        <input
-            type="password"
-            placeholder="Password"
-        >
+<div class="form-group" id="nameGroup" style="display:none">
 
-        <button class="submit" onclick="login()">
-            Login
-        </button>
+<label>Full name</label>
 
-        <div class="switch">
-            Don't have an account?
-            <span onclick="openRegister()">Register</span>
-        </div>
-
-    </div>
+<input
+id="nameInput"
+type="text"
+placeholder="Your name"
+>
 
 </div>
 
+<div class="form-group">
 
-<!-- REGISTER MODAL -->
+<label>Email</label>
 
-<div class="modal" id="registerModal">
-
-    <div class="modal-box">
-
-        <span class="close" onclick="closeModal('registerModal')">
-            ×
-        </span>
-
-        <h2>Create Account</h2>
-
-        <input
-            type="text"
-            placeholder="Full name"
-        >
-
-        <input
-            type="email"
-            placeholder="Email address"
-        >
-
-        <input
-            type="password"
-            placeholder="Create password"
-        >
-
-        <button class="submit" onclick="register()">
-            Create Account
-        </button>
-
-        <div class="switch">
-            Already have an account?
-            <span onclick="openLogin()">Login</span>
-        </div>
-
-    </div>
+<input
+id="emailInput"
+type="email"
+required
+placeholder="you@example.com"
+>
 
 </div>
 
+<div class="form-group">
 
-<!-- CART MODAL -->
+<label>Password</label>
 
-<div class="modal" id="cartModal">
-
-    <div class="modal-box">
-
-        <span class="close" onclick="closeModal('cartModal')">
-            ×
-        </span>
-
-        <h2>Your Cart</h2>
-
-        <div class="cart-items" id="cartItems">
-            Your cart is empty.
-        </div>
-
-        <div class="cart-total">
-            Total: ₦<span id="cartTotal">0</span>
-        </div>
-
-        <button class="checkout" onclick="checkout()">
-            Checkout
-        </button>
-
-    </div>
+<input
+id="passwordInput"
+type="password"
+required
+minlength="6"
+placeholder="At least 6 characters"
+>
 
 </div>
 
+<button class="form-btn" id="authButton">
+Login
+</button>
 
-<script>
+</form>
 
-let cart = [];
+<div class="switch" id="switchBox">
+Don't have an account?
+<a onclick="toggleAuth()">Create one</a>
+</div>
 
-function addToCart(name, price){
+</div>
+</div>
 
-    cart.push({
-        name:name,
-        price:price
-    });
+<!-- CART -->
 
-    updateCart();
+<div class="modal-bg" id="cartModal">
 
-    alert(name + " added to cart!");
+<div class="modal">
+
+<button class="close" onclick="closeModal('cartModal')">
+×
+</button>
+
+<h2>Your Cart</h2>
+
+<div id="cartItems"></div>
+
+<div class="cart-total">
+Total: ₦<span id="cartTotal">0</span>
+</div>
+
+<button class="checkout" onclick="checkout()">
+Proceed to Checkout
+</button>
+
+</div>
+</div>
+
+<script>const products = [
+
+{id:1,name:"Wireless Headphones",price:25000,old:30000,cat:"Electronics",icon:"🎧",desc:"Comfortable wireless headphones with clear sound."},
+
+{id:2,name:"Smart Watch",price:35000,old:42000,cat:"Electronics",icon:"⌚",desc:"Smart everyday watch with useful features."},
+
+{id:3,name:"Bluetooth Speaker",price:28000,old:33000,cat:"Electronics",icon:"🔊",desc:"Portable speaker for music at home or outdoors."},
+
+{id:4,name:"Smartphone",price:180000,old:200000,cat:"Electronics",icon:"📱",desc:"Modern smartphone for work, study and entertainment."},
+
+{id:5,name:"Laptop",price:450000,old:500000,cat:"Electronics",icon:"💻",desc:"Reliable laptop for everyday tasks."},
+
+{id:6,name:"Sneakers",price:30000,old:38000,cat:"Fashion",icon:"👟",desc:"Casual sneakers for everyday use."},
+
+{id:7,name:"Backpack",price:22000,old:27000,cat:"Fashion",icon:"🎒",desc:"Practical backpack with plenty of room."},
+
+{id:8,name:"Hoodie",price:25000,old:30000,cat:"Fashion",icon:"🧥",desc:"Comfortable casual hoodie."},
+
+{id:9,name:"Table Lamp",price:18000,old:22000,cat:"Home",icon:"💡",desc:"Simple modern lamp for your room or desk."},
+
+{id:10,name:"Coffee Maker",price:55000,old:65000,cat:"Home",icon:"☕",desc:"Easy-to-use coffee maker for home."},
+
+{id:11,name:"Storage Box",price:12000,old:15000,cat:"Home",icon:"📦",desc:"Useful storage solution for your home."},
+
+{id:12,name:"Phone Case",price:8000,old:10000,cat:"Accessories",icon:"📱",desc:"Protective case for your smartphone."},
+
+{id:13,name:"Power Bank",price:20000,old:25000,cat:"Accessories",icon:"🔋",desc:"Portable power for your devices."},
+
+{id:14,name:"Sunglasses",price:15000,old:19000,cat:"Accessories",icon:"🕶️",desc:"Stylish everyday sunglasses."},
+
+{id:15,name:"USB Cable",price:6000,old:8000,cat:"Accessories",icon:"🔌",desc:"Durable charging and data cable."},
+
+{id:16,name:"Wireless Mouse",price:12000,old:15000,cat:"Electronics",icon:"🖱️",desc:"Comfortable wireless mouse for your computer."}
+
+];
+
+let cart = JSON.parse(localStorage.getItem("novaCart") || "[]");
+
+let currentCategory = "All";
+
+let registerMode = false;
+
+let currentUser = JSON.parse(
+localStorage.getItem("novaUser") || "null"
+);
+
+function money(n){
+return Number(n).toLocaleString("en-NG");
+}
+
+function renderProducts(list=products){
+
+const grid=document.getElementById("productGrid");
+
+if(!list.length){
+
+grid.innerHTML=
+'<div class="empty">No products found.</div>';
+
+return;
+}
+
+grid.innerHTML=list.map(p=>`
+
+<div class="card">
+
+<div class="pic">
+${p.icon}
+</div>
+
+<div class="info">
+
+<h3>${p.name}</h3>
+
+<p>${p.desc}</p>
+
+<div class="price">
+₦${money(p.price)}
+<span class="old">
+₦${money(p.old)}
+</span>
+</div>
+
+<button class="add" onclick="addToCart(${p.id})">
+Add to Cart
+</button>
+
+</div>
+</div>
+
+`).join("");
 
 }
 
+function addToCart(id){
 
-function updateCart(){
+const found=cart.find(x=>x.id===id);
 
-    document.getElementById("cartCount").textContent = cart.length;
+if(found)
+found.qty++;
+else
+cart.push({id,qty:1});
 
-    let items = document.getElementById("cartItems");
+saveCart();
 
-    if(cart.length === 0){
+updateCartCount();
 
-        items.innerHTML = "Your cart is empty.";
-
-        document.getElementById("cartTotal").textContent = "0";
-
-        return;
-    }
-
-    let total = 0;
-
-    items.innerHTML = "";
-
-    cart.forEach((item,index)=>{
-
-        total += item.price;
-
-        items.innerHTML += `
-
-            <div class="cart-item">
-
-                <div>
-                    <strong>${item.name}</strong><br>
-                    ₦${item.price.toLocaleString()}
-                </div>
-
-                <button onclick="removeItem(${index})">
-                    Remove
-                </button>
-
-            </div>
-
-        `;
-
-    });
-
-    document.getElementById("cartTotal").textContent =
-        total.toLocaleString();
+alert("Product added to your cart.");
 
 }
 
+function saveCart(){
 
-function removeItem(index){
-
-    cart.splice(index,1);
-
-    updateCart();
+localStorage.setItem(
+"novaCart",
+JSON.stringify(cart)
+);
 
 }
 
+function updateCartCount(){
+
+document.getElementById("cartCount").textContent=
+cart.reduce((a,b)=>a+b.qty,0);
+
+}
 
 function openCart(){
 
-    document.getElementById("cartModal").style.display = "flex";
+renderCart();
+
+document.getElementById("cartModal").style.display="flex";
 
 }
+
+function renderCart(){
+
+const box=document.getElementById("cartItems");
+
+if(!cart.length){
+
+box.innerHTML=
+'<p style="padding:20px 0;text-align:center">Your cart is empty.</p>';
+
+document.getElementById("cartTotal").textContent="0";
+
+return;
+
+}
+
+let total=0;
+
+box.innerHTML=cart.map(item=>{
+
+const p=products.find(x=>x.id===item.id);
+
+total+=p.price*item.qty;
+
+return `
+
+<div class="cart-item">
+
+<div class="cart-icon">
+${p.icon}
+</div>
+
+<div class="cart-details">
+
+<b>${p.name}</b>
+
+<div>
+₦${money(p.price)}
+</div>
+
+<div class="qty">
+
+<button onclick="changeQty(${p.id},-1)">
+−
+</button>
+
+<span>${item.qty}</span>
+
+<button onclick="changeQty(${p.id},1)">
++
+</button>
+
+<button onclick="removeItem(${p.id})">
+Remove
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+document.getElementById("cartTotal").textContent=
+money(total);
+
+}
+
+function changeQty(id,amount){
+
+const item=cart.find(x=>x.id===id);
+
+if(!item)return;
+
+item.qty+=amount;
+
+if(item.qty<=0)
+cart=cart.filter(x=>x.id!==id);
+
+saveCart();
+
+updateCartCount();
+
+renderCart();
+
+}
+
+function removeItem(id){
+
+cart=cart.filter(x=>x.id!==id);
+
+saveCart();
+
+updateCartCount();
+
+renderCart();
+
+}
+
+function checkout(){
+
+if(!cart.length){
+
+alert("Your cart is empty.");
+
+return;
+}
+
+if(!currentUser){
+
+closeModal("cartModal");
+
+openLogin();
+
+alert(
+"Please login or create an account before checkout."
+);
+
+return;
+}
+
+alert(
+"Checkout is ready. Connect your preferred payment system to receive real payments."
+);
+
+}
+
+function filterCategory(cat,btn){
+
+currentCategory=cat;
+
+document.querySelectorAll(".cat")
+.forEach(x=>x.classList.remove("active"));
+
+btn.classList.add("active");
+
+applyFilters();
+
+}
+
+function searchProducts(){
+
+applyFilters();
+
+}
+
+function applyFilters(){
+
+const q=
+document.getElementById("searchInput")
+.value
+.toLowerCase()
+.trim();
+
+renderProducts(
+
+products.filter(p=>
+(currentCategory==="All" || p.cat===currentCategory)
+&&
+(
+!q ||
+p.name.toLowerCase().includes(q) ||
+p.cat.toLowerCase().includes(q)
+)
+)
+
+);
+
+}
+
+document.getElementById("searchInput")
+.addEventListener("input",applyFilters);
 
 
 function openLogin(){
 
-    closeModal("registerModal");
+updateAuthUI();
 
-    document.getElementById("loginModal").style.display = "flex";
-
-}
-
-
-function openRegister(){
-
-    closeModal("loginModal");
-
-    document.getElementById("registerModal").style.display = "flex";
+document.getElementById("loginModal")
+.style.display="flex";
 
 }
-
 
 function closeModal(id){
 
-    document.getElementById(id).style.display = "none";
+document.getElementById(id)
+.style.display="none";
+
+}
+
+function toggleAuth(){
+
+registerMode=!registerMode;
+
+document.getElementById("authTitle")
+.textContent=
+registerMode
+?"Create a NovaStore Account"
+:"Login to NovaStore";
+
+document.getElementById("nameGroup")
+.style.display=
+registerMode
+?"block"
+:"none";
+
+document.getElementById("nameInput")
+.required=registerMode;
+
+document.getElementById("authButton")
+.textContent=
+registerMode
+?"Create Account"
+:"Login";
+
+document.getElementById("switchBox")
+.innerHTML=
+registerMode
+?
+'Already have an account? <a onclick="toggleAuth()">Login</a>'
+:
+'Don\'t have an account? <a onclick="toggleAuth()">Create one</a>';
+
+}function handleAuth(e){
+
+e.preventDefault();
+
+const email=
+document.getElementById("emailInput")
+.value.trim();
+
+const password=
+document.getElementById("passwordInput")
+.value;
+
+const name=
+document.getElementById("nameInput")
+.value.trim()
+||
+email.split("@")[0];
+
+/*
+This demo stores the session in this browser.
+
+For REAL account authentication,
+replace this section with Firebase
+Authentication after adding your
+Firebase project's configuration.
+*/
+
+currentUser={
+name,
+email
+};
+
+localStorage.setItem(
+"novaUser",
+JSON.stringify(currentUser)
+);
+
+alert(
+registerMode
+?"Account created successfully."
+:"Login successful."
+);
+
+registerMode=false;
+
+document.getElementById("authForm")
+.reset();
+
+updateAuthUI();
+
+closeModal("loginModal");
 
 }
 
 
-function login(){
+function updateAuthUI(){
 
-    alert("Login system ready. A real database will be connected later.");
+const account=
+document.getElementById("accountText");
+
+if(currentUser)
+account.textContent=
+currentUser.name || "Account";
+else
+account.textContent="Login";
+
+
+const box=
+document.getElementById("loggedInBox");
+
+
+if(currentUser){
+
+box.style.display="block";
+
+box.innerHTML=`
+
+<div class="account">
+
+Logged in as
+<b>${currentUser.name}</b>
+
+<br>
+
+${currentUser.email}
+
+<br><br>
+
+<button
+onclick="logout()"
+style="background:#111827;color:#fff;padding:8px 12px;border-radius:6px"
+>
+Logout
+</button>
+
+</div>
+
+`;
+
+document.getElementById("authForm")
+.style.display="none";
+
+document.getElementById("switchBox")
+.style.display="none";
+
+}
+
+else{
+
+box.style.display="none";
+
+document.getElementById("authForm")
+.style.display="block";
+
+document.getElementById("switchBox")
+.style.display="block";
+
+}
 
 }
 
 
-function register(){
+function logout(){
 
-    alert("Registration system ready. A real database will be connected later.");
+currentUser=null;
 
-}
+localStorage.removeItem("novaUser");
 
+updateAuthUI();
 
-function checkout(){
+closeModal("loginModal");
 
-    if(cart.length === 0){
-
-        alert("Your cart is empty.");
-
-        return;
-    }
-
-    alert(
-        "Checkout selected. Payment gateway can be connected next."
-    );
+alert("You have been logged out.");
 
 }
 
 
-function filterProducts(category){
+window.onclick=function(e){
 
-    let products =
-        document.querySelectorAll(".product");
+if(e.target.classList.contains("modal-bg"))
+e.target.style.display="none";
 
-    products.forEach(product=>{
-
-        if(
-            category === "all" ||
-            product.dataset.category === category
-        ){
-
-            product.style.display = "block";
-
-        }else{
-
-            product.style.display = "none";
-
-        }
-
-    });
-
-}
+};
 
 
-function searchProducts(){
+renderProducts();
 
-    let search =
-        document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase();
+updateCartCount();
 
-    let products =
-        document.querySelectorAll(".product");
-
-    products.forEach(product=>{
-
-        let name =
-            product
-            .querySelector("h3")
-            .textContent
-            .toLowerCase();
-
-        if(name.includes(search)){
-
-            product.style.display = "block";
-
-        }else{
-
-            product.style.display = "none";
-
-        }
-
-    });
-
-}
+updateAuthUI();
 
 
-window.onclick = function(event){
+/*
+========================================================
+FIREBASE SETUP
+========================================================
 
-    if(event.target.classList.contains("modal")){
+Your Firebase file can be kept in the repository,
+but GitHub Pages will not automatically connect
+this page to Firebase.
 
-        event.target.style.display = "none";
+When you are ready to use REAL Firebase Login
+and Database, replace the demo login above with
+Firebase Authentication and add your project's
+Firebase configuration.
 
-    }
+Example:
 
-}
+const firebaseConfig = {
 
+apiKey: "YOUR_API_KEY",
+
+authDomain:
+"YOUR_PROJECT.firebaseapp.com",
+
+projectId:
+"YOUR_PROJECT_ID",
+
+storageBucket:
+"YOUR_PROJECT.appspot.com",
+
+messagingSenderId:
+"YOUR_SENDER_ID",
+
+appId:
+"YOUR_APP_ID"
+
+};
+
+Never put private server keys or passwords
+in this HTML file.
+
+========================================================
+*/
 
 </script>
 
