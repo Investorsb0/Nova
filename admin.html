@@ -1,361 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NovaStore Admin</title>
+  <title>NovaStore Admin</title>
 
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
-body{
-    background:#f4f6f8;
-    min-height:100vh;
-}
+    body {
+      background: #f4f6f8;
+      min-height: 100vh;
+      color: #222;
+    }
 
-#loginPage{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-}
+    /* LOGIN */
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-.login-box{
-    background:white;
-    width:100%;
-    max-width:400px;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 5px 25px rgba(0,0,0,.12);
-}
+    .login-box {
+      background: white;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    }
 
-.login-box h1{
-    text-align:center;
-    margin-bottom:10px;
-}
+    .logo {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
 
-.login-box p{
-    text-align:center;
-    color:#777;
-    margin-bottom:25px;
-}
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 25px;
+    }
 
-input{
-    width:100%;
-    padding:14px;
-    margin-bottom:15px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    font-size:16px;
-}
+    .login-box label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
 
-button{
-    width:100%;
-    padding:14px;
-    border:0;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-    font-weight:bold;
-}
+    .login-box input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
 
-.login-btn{
-    background:#111;
-    color:white;
-}
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.error{
-    color:#d00;
-    text-align:center;
-    margin-top:15px;
-}
+    .login-btn:hover {
+      opacity: 0.9;
+    }
 
-#adminPage{
-    display:none;
-}
+    #loginMessage {
+      margin-top: 15px;
+      text-align: center;
+      color: #d00;
+      font-size: 14px;
+    }
 
-header{
-    background:#111;
-    color:white;
-    padding:18px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+    /* ADMIN */
+    #adminPage {
+      display: none;
+    }
 
-header h1{
-    font-size:20px;
-}
+    header {
+      background: #111;
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
 
-.logout{
-    width:auto;
-    padding:9px 15px;
-    background:#fff;
-    color:#111;
-}
+    header h1 {
+      font-size: 22px;
+    }
 
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:25px 20px;
-}
+    .logout-btn {
+      border: none;
+      background: white;
+      color: #111;
+      padding: 9px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.welcome{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    margin-bottom:20px;
-}
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
-}
+    .welcome {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-.card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
-}
+    .welcome h2 {
+      margin-bottom: 8px;
+    }
 
-.card h3{
-    color:#777;
-    margin-bottom:10px;
-}
+    .welcome p {
+      color: #666;
+      word-break: break-word;
+    }
 
-.card strong{
-    font-size:28px;
-}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+    }
 
-.hidden{
-    display:none !important;
-}
-</style>
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      color: #777;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .card strong {
+      font-size: 28px;
+    }
+
+    .section {
+      background: white;
+      margin-top: 20px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+    }
+
+    .section p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .store-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 18px;
+      background: #111;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 500px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logout-btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage">
+  <!-- LOGIN PAGE -->
+  <div id="loginPage">
 
     <div class="login-box">
 
-        <h1>NovaStore Admin</h1>
+      <div class="logo">NovaStore</div>
 
-        <p>Private administrator login</p>
+      <div class="subtitle">
+        Admin Panel
+      </div>
 
-        <form id="loginForm">
+      <form id="loginForm">
 
-            <input
-                type="email"
-                id="email"
-                placeholder="Admin email"
-                required
-            >
+        <label for="email">Email</label>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                required
-            >
+        <input
+          type="email"
+          id="email"
+          placeholder="Admin email"
+          required
+        >
 
-            <button class="login-btn" type="submit">
-                Login
-            </button>
+        <label for="password">Password</label>
 
-        </form>
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        >
 
-        <div id="error" class="error"></div>
+        <button
+          type="submit"
+          class="login-btn"
+          id="loginButton"
+        >
+          Login
+        </button>
+
+      </form>
+
+      <div id="loginMessage"></div>
 
     </div>
 
-</div>
+  </div>
 
 
-<!-- ADMIN PAGE -->
-<div id="adminPage">
+  <!-- ADMIN PAGE -->
+  <div id="adminPage">
 
     <header>
 
-        <h1>NovaStore Admin Panel</h1>
+      <h1>NovaStore Admin</h1>
 
-        <button class="logout" id="logoutBtn">
-            Logout
-        </button>
+      <button
+        class="logout-btn"
+        id="logoutButton"
+      >
+        Logout
+      </button>
 
     </header>
 
-    <div class="container">
 
-        <div class="welcome">
+    <main class="container">
 
-            <h2>Welcome, Admin 👋</h2>
+      <div class="welcome">
 
-            <p id="adminEmail"></p>
+        <h2>Welcome, Admin 👋</h2>
 
+        <p>
+          You are successfully logged into the NovaStore administration panel.
+        </p>
+
+        <p style="margin-top:8px;">
+          Signed in as:
+          <strong id="adminEmail"></strong>
+        </p>
+
+        <a
+          href="index.html"
+          class="store-btn"
+        >
+          View Store
+        </a>
+
+      </div>
+
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>Products</h3>
+          <strong id="productCount">0</strong>
         </div>
 
-        <div class="cards">
-
-            <div class="card">
-                <h3>Products</h3>
-                <strong>0</strong>
-            </div>
-
-            <div class="card">
-                <h3>Orders</h3>
-                <strong>0</strong>
-            </div>
-
-            <div class="card">
-                <h3>Customers</h3>
-                <strong>0</strong>
-            </div>
-
-            <div class="card">
-                <h3>Sales</h3>
-                <strong>₦0</strong>
-            </div>
-
+        <div class="card">
+          <h3>Orders</h3>
+          <strong id="orderCount">0</strong>
         </div>
 
-    </div>
+        <div class="card">
+          <h3>Customers</h3>
+          <strong id="customerCount">0</strong>
+        </div>
 
-</div>
-
-
-<script type="module">
-
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-import {
-    getAuth,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
-} from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+      </div>
 
 
-const firebaseConfig = {
+      <div class="section">
 
-    apiKey: "AIzaSyCNrU3igTkkcQ0Z6Zq1dluKw_s_3yHovjE",
+        <h2>Admin Dashboard</h2>
 
-    authDomain: "novastore-6fd18.firebaseapp.com",
+        <p>
+          Your Firebase authentication is connected successfully.
+          This dashboard is ready for us to connect to your NovaStore
+          products, orders and customer database.
+        </p>
 
-    databaseURL:
-    "https://novastore-6fd18-default-rtdb.asia-southeast1.firebasedatabase.app",
+      </div>
 
-    projectId: "novastore-6fd18",
+    </main>
 
-    storageBucket:
-    "novastore-6fd18.firebasestorage.app",
-
-    messagingSenderId: "783420364153",
-
-    appId:
-    "1:783420364153:web:1b56b655e3e804726d8ba8",
-
-    measurementId: "G-Q760SBLPLT"
-};
+  </div>
 
 
-const app = initializeApp(firebaseConfig);
+  <!-- FIREBASE -->
+  <script type="module">
 
-const auth = getAuth(app);
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-
-const loginPage =
-document.getElementById("loginPage");
-
-const adminPage =
-document.getElementById("adminPage");
-
-const loginForm =
-document.getElementById("loginForm");
-
-const errorBox =
-document.getElementById("error");
-
-const logoutBtn =
-document.getElementById("logoutBtn");
-
-const adminEmail =
-document.getElementById("adminEmail");
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-loginForm.addEventListener("submit", async (e) => {
+    /* YOUR FIREBASE CONFIG */
 
-    e.preventDefault();
+    const firebaseConfig = {
 
-    errorBox.textContent = "";
+      apiKey: "AIzaSyCNrU3igTkkcQ0Z6Zq1dluKw_s_3yHovjE",
 
-    const email =
-    document.getElementById("email").value.trim();
+      authDomain: "novastore-6fd18.firebaseapp.com",
 
-    const password =
-    document.getElementById("password").value;
+      databaseURL:
+        "https://novastore-6fd18-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-    try {
+      projectId: "novastore-6fd18",
+
+      storageBucket:
+        "novastore-6fd18.firebasestorage.app",
+
+      messagingSenderId: "783420364153",
+
+      appId:
+        "1:783420364153:web:1b56b655e3e804726d8ba8",
+
+      measurementId: "G-Q760SBLPLT"
+    };
+
+
+    /* INITIALIZE FIREBASE */
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    /* ELEMENTS */
+
+    const loginPage =
+      document.getElementById("loginPage");
+
+    const adminPage =
+      document.getElementById("adminPage");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const adminEmail =
+      document.getElementById("adminEmail");
+
+
+    /* LOGIN */
+
+    loginForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      loginMessage.textContent = "";
+
+      loginButton.disabled = true;
+
+      loginButton.textContent = "Logging in...";
+
+
+      try {
 
         await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
+          auth,
+          email,
+          password
         );
 
-    } catch(error) {
+      } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
-        errorBox.textContent =
-        "Invalid admin email or password.";
+        if (
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/wrong-password" ||
+          error.code === "auth/user-not-found"
+        ) {
 
-    }
+          loginMessage.textContent =
+            "Incorrect email or password.";
 
-});
+        } else if (
+          error.code === "auth/too-many-requests"
+        ) {
+
+          loginMessage.textContent =
+            "Too many attempts. Please try again later.";
+
+        } else {
+
+          loginMessage.textContent =
+            "Login failed. Please try again.";
+
+        }
+
+      } finally {
+
+        loginButton.disabled = false;
+
+        loginButton.textContent = "Login";
+
+      }
+
+    });
 
 
-onAuthStateChanged(auth, (user) => {
+    /* CHECK LOGIN STATUS */
 
-    if(user){
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
 
         loginPage.style.display = "none";
 
         adminPage.style.display = "block";
 
         adminEmail.textContent =
-        user.email;
+          user.email || "Admin";
 
-    }else{
+      } else {
 
         loginPage.style.display = "flex";
 
         adminPage.style.display = "none";
 
-    }
+        adminEmail.textContent = "";
 
-});
+      }
+
+    });
 
 
-logoutBtn.addEventListener("click", async () => {
+    /* LOGOUT */
 
-    await signOut(auth);
+    logoutButton.addEventListener("click", async () => {
 
-});
+      try {
 
-</script>
+        await signOut(auth);
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+
+    });
+
+  </script>
 
 </body>
-        </html>
+</html>
