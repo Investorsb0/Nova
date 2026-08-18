@@ -1,19 +1,12 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-
 <meta charset="utf-8">
-
-<meta
- name="viewport"
- content="width=device-width,initial-scale=1"
->
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>NovaStore</title>
 
 <style>
-
 *{
  box-sizing:border-box;
  font-family:Arial,sans-serif
@@ -60,6 +53,25 @@ header{
  border:0;
  border-radius:8px;
  cursor:pointer
+}
+
+.primary{
+ background:#111827;
+ color:#fff
+}
+
+.green{
+ background:#16a34a;
+ color:#fff
+}
+
+.red{
+ background:#dc2626;
+ color:#fff
+}
+
+.secondary{
+ background:#e5e7eb
 }
 
 .hero{
@@ -149,8 +161,6 @@ header{
 
 .add{
  width:100%;
- background:#16a34a;
- color:white;
  margin-top:10px
 }
 
@@ -188,7 +198,8 @@ header{
 }
 
 .field input,
-.field textarea{
+.field textarea,
+.field select{
  width:100%;
  padding:11px;
  border:1px solid #ddd;
@@ -202,20 +213,26 @@ header{
  flex-wrap:wrap
 }
 
-.primary{
- background:#111827;
- color:#fff
-}
-
-.secondary{
- background:#e5e7eb
-}
-
 .cartrow{
  display:flex;
  justify-content:space-between;
+ gap:10px;
  padding:12px 0;
  border-bottom:1px solid #eee
+}
+
+.message{
+ margin-top:12px;
+ padding:10px;
+ border-radius:8px;
+ background:#f3f4f6
+}
+
+.accountInfo{
+ background:#f3f4f6;
+ padding:12px;
+ border-radius:8px;
+ margin:10px 0
 }
 
 @media(max-width:650px){
@@ -243,15 +260,16 @@ header{
   height:140px
  }
 
-}
+ .cartrow{
+  flex-direction:column
+ }
 
+}
 </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -268,14 +286,14 @@ NovaStore
 >
 
 <button
- class="btn"
+ class="btn secondary"
  onclick="openCart()"
 >
 Cart (<span id="count">0</span>)
 </button>
 
 <button
- class="btn"
+ class="btn secondary"
  id="account"
  onclick="openAccount()"
 >
@@ -338,7 +356,7 @@ Loading products...
 </footer>
 
 
-<!-- ACCOUNT -->
+<!-- ACCOUNT MODAL -->
 
 <div
  id="accountModal"
@@ -351,6 +369,44 @@ Loading products...
 Customer Account
 </h2>
 
+<div
+ id="loggedInBox"
+ style="display:none"
+>
+
+<div class="accountInfo">
+
+You are logged in as:
+
+<strong id="loggedEmail"></strong>
+
+</div>
+
+<div class="actions">
+
+<button
+ class="btn red"
+ onclick="logoutCustomer()"
+>
+Logout
+</button>
+
+<button
+ class="btn secondary"
+ onclick="closeM('accountModal')"
+>
+Close
+</button>
+
+</div>
+
+</div>
+
+
+<div
+ id="loginBox"
+>
+
 <div class="field">
 
 <label>
@@ -360,6 +416,7 @@ Email
 <input
  id="email"
  type="email"
+ autocomplete="email"
 >
 
 </div>
@@ -374,6 +431,7 @@ Password
 <input
  id="password"
  type="password"
+ autocomplete="current-password"
 >
 
 </div>
@@ -389,7 +447,7 @@ Login
 </button>
 
 <button
- class="btn secondary"
+ class="btn green"
  onclick="register()"
 >
 Create account
@@ -404,14 +462,18 @@ Close
 
 </div>
 
-<p id="accountMsg"></p>
+</div>
+
+<p
+ id="accountMsg"
+></p>
 
 </div>
 
 </div>
 
 
-<!-- CART -->
+<!-- CART MODAL -->
 
 <div
  id="cartModal"
@@ -426,12 +488,53 @@ Your Cart
 
 <div id="cartItems"></div>
 
-<h3 id="total"></h3>
+<h3 id="total">
+Total: ₦0
+</h3>
+
+<div class="field">
+
+<label>
+Payment method
+</label>
+
+<select id="paymentMethod">
+
+<option value="bank_transfer">
+Bank Transfer
+</option>
+
+<option value="cash_on_delivery">
+Cash on Delivery
+</option>
+
+</select>
+
+</div>
+
+
+<div
+ id="bankInfo"
+ class="message"
+>
+
+<strong>Bank Transfer</strong>
+
+<p>
+After placing your order, contact NovaStore for the current bank-transfer details.
+</p>
+
+<p>
+Do not send money to an unverified account.
+</p>
+
+</div>
+
 
 <div class="actions">
 
 <button
- class="btn primary"
+ class="btn green"
  onclick="checkout()"
 >
 Place Order
@@ -455,7 +558,6 @@ Close
 
 <script type="module">
 
-
 import {
  initializeApp
 }
@@ -478,13 +580,16 @@ import {
  getAuth,
  onAuthStateChanged,
  signInWithEmailAndPassword,
- createUserWithEmailAndPassword
+ createUserWithEmailAndPassword,
+ signOut
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-const firebaseConfig={
+/* FIREBASE */
+
+const firebaseConfig = {
 
  apiKey:
  "AIzaSyCNrU3igTkkcQ0Z6Zq1dluKw_s_3yHovE",
@@ -513,222 +618,335 @@ const firebaseConfig={
 };
 
 
-const app=
-initializeApp(firebaseConfig);
+const app =
+ initializeApp(firebaseConfig);
+
+const db =
+ getDatabase(app);
+
+const auth =
+ getAuth(app);
 
 
-const db=
-getDatabase(app);
+/* VARIABLES */
+
+let products = {};
+
+let cart =
+ JSON.parse(
+  localStorage.getItem("novaCart") || "[]"
+ );
+
+let user = null;
 
 
-const auth=
-getAuth(app);
+/* ELEMENTS */
+
+const productsBox =
+ document.getElementById("products");
+
+const searchInput =
+ document.getElementById("search");
+
+const categoryInput =
+ document.getElementById("category");
+
+const accountButton =
+ document.getElementById("account");
+
+const accountModal =
+ document.getElementById("accountModal");
+
+const cartModal =
+ document.getElementById("cartModal");
+
+const count =
+ document.getElementById("count");
+
+const cartItems =
+ document.getElementById("cartItems");
+
+const total =
+ document.getElementById("total");
+
+const cartMsg =
+ document.getElementById("cartMsg");
+
+const accountMsg =
+ document.getElementById("accountMsg");
+
+const loginBox =
+ document.getElementById("loginBox");
+
+const loggedInBox =
+ document.getElementById("loggedInBox");
+
+const loggedEmail =
+ document.getElementById("loggedEmail");
+
+const emailInput =
+ document.getElementById("email");
+
+const passwordInput =
+ document.getElementById("password");
+
+const paymentMethod =
+ document.getElementById("paymentMethod");
+
+const bankInfo =
+ document.getElementById("bankInfo");
 
 
-let products={};
+/* MONEY */
 
-let cart=
-JSON.parse(
- localStorage.getItem("novaCart")||"[]"
-);
-
-let user=null;
+const money = n =>
+ "₦" +
+ Number(n || 0)
+ .toLocaleString("en-NG");
 
 
-const money=n=>
-"₦"+Number(n||0)
-.toLocaleString("en-NG");
+/* SAFE TEXT */
+
+const safe = s =>
+ String(s ?? "")
+ .replace(
+  /[&<>"']/g,
+  c => ({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#039;"
+  }[c])
+ );
 
 
-const safe=s=>
-String(s??"")
-.replace(
- /[&<>"']/g,
- c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#039;"
- }[c])
-);
-
+/* LOAD PRODUCTS */
 
 onValue(
  ref(db,"products"),
- snapshot=>{
+ snapshot => {
 
-  products=
-  snapshot.val()||{};
+  products =
+  snapshot.val() || {};
 
   renderCats();
 
   render();
 
+ },
+ error => {
+
+  console.error(
+   "Products error:",
+   error
+  );
+
+  productsBox.innerHTML =
+  "<p>Unable to load products.</p>";
+
  }
 );
 
+
+/* AUTH STATE */
 
 onAuthStateChanged(
  auth,
- u=>{
+ currentUser => {
 
-  user=u;
+  user =
+  currentUser;
 
-  account.textContent=
-  u?"Account":"Login";
+  if(user){
+
+   accountButton.textContent =
+   "Account";
+
+   loggedEmail.textContent =
+   user.email || "";
+
+  }else{
+
+   accountButton.textContent =
+   "Login";
+
+  }
 
  }
 );
 
 
+/* CATEGORIES */
+
 function renderCats(){
 
- let old=
- category.value;
+ const old =
+ categoryInput.value;
 
- let categories=
+ const categories =
  [
   ...new Set(
    Object.values(products)
-   .map(p=>p.category)
+   .map(
+    p => p.category
+   )
    .filter(Boolean)
   )
  ];
 
+ categoryInput.innerHTML =
+ '<option value="all">All categories</option>' +
 
- category.innerHTML=
- '<option value="all">All categories</option>'+
  categories
  .map(
-  x=>`<option>${safe(x)}</option>`
+  x =>
+  `<option value="${safe(x)}">
+   ${safe(x)}
+  </option>`
  )
  .join("");
 
-
- category.value=
+ categoryInput.value =
  categories.includes(old)
- ?old
- :"all";
+ ? old
+ : "all";
 
 }
 
 
+/* PRODUCTS */
+
 function render(){
 
- let q=
- search.value.toLowerCase();
+ const q =
+ searchInput.value
+ .toLowerCase()
+ .trim();
 
- let c=
- category.value;
+ const c =
+ categoryInput.value;
 
-
- let list=
+ const list =
  Object.entries(products)
  .filter(
-  ([id,p])=>
-  (p.name||"")
+  ([id,p]) =>
+
+  (p.name || "")
   .toLowerCase()
   .includes(q)
+
   &&
-  (c==="all"||p.category===c)
+
+  (
+   c === "all" ||
+   p.category === c
+  )
+
   &&
-  p.available!==false
+
+  p.available !== false
  );
 
 
- productsBox.innerHTML=
+ productsBox.innerHTML =
  list.length
 
  ?
 
  list.map(
- ([id,p])=>`
+  ([id,p]) => `
 
- <article class="card">
+  <article class="card">
 
- <div class="pic">
+  <div class="pic">
 
- ${
-  p.image
+  ${
+   p.image
 
-  ?
+   ?
 
-  `<img
-  src="${safe(p.image)}"
-  onerror="this.style.display='none'"
-  >`
+   `<img
+    src="${safe(p.image)}"
+    alt="${safe(p.name)}"
+    onerror="
+     this.style.display='none'
+    "
+   >`
 
-  :
+   :
 
-  "🛍️"
- }
+   "🛍️"
+  }
 
- </div>
-
-
- <div class="info">
-
- <div class="cat">
-
- ${safe(p.category||"General")}
-
- </div>
+  </div>
 
 
- <div class="name">
+  <div class="info">
 
- ${safe(p.name)}
+  <div class="cat">
 
- </div>
+  ${safe(
+   p.category ||
+   "General"
+  )}
 
-
- ${
-  p.oldPrice
-
-  ?
-
-  `<div class="old">
-  ${money(p.oldPrice)}
-  </div>`
-
-  :
-
-  ""
- }
+  </div>
 
 
- <div class="price">
+  <div class="name">
 
- ${money(p.price)}
+  ${safe(p.name)}
 
- </div>
-
-
- <small>
-
- ${safe(
-  p.description||
-  "Available now"
- )}
-
- </small>
+  </div>
 
 
- <button
- class="btn add"
- onclick="add('${id}')"
- >
+  ${
+   p.oldPrice
 
- Add to Cart
+   ?
 
- </button>
+   `<div class="old">
+   ${money(p.oldPrice)}
+   </div>`
 
- </div>
+   :
 
- </article>
+   ""
+  }
 
- `
+
+  <div class="price">
+
+  ${money(p.price)}
+
+  </div>
+
+
+  <small>
+
+  ${safe(
+   p.description ||
+   "Available now"
+  )}
+
+  </small>
+
+
+  <button
+   class="btn green add"
+   onclick="addToCart('${id}')"
+  >
+
+  Add to Cart
+
+  </button>
+
+  </div>
+
+  </article>
+
+  `
  ).join("")
 
  :
@@ -738,362 +956,649 @@ function render(){
 }
 
 
-const productsBox=
-document.getElementById("products");
+searchInput.oninput =
+ render;
+
+categoryInput.onchange =
+ render;
 
 
-search.oninput=
-render;
+/* ADD TO CART */
+
+window.addToCart =
+ function(id){
+
+  const product =
+  products[id];
+
+  if(!product){
+
+   alert(
+    "Product is no longer available."
+   );
+
+   return;
+
+  }
+
+  const existing =
+  cart.find(
+   x => x.id === id
+  );
+
+  if(existing){
+
+   existing.qty++;
+
+  }else{
+
+   cart.push({
+    id:id,
+    qty:1
+   });
+
+  }
+
+  saveCart();
+
+  alert(
+   "Added to cart."
+  );
+
+ };
 
 
-category.onchange=
-render;
+/* SAVE CART */
 
-
-window.add=id=>{
-
- let item=
- cart.find(x=>x.id===id);
-
-
- if(item){
-
-  item.qty++;
-
- }else{
-
-  cart.push({
-   id:id,
-   qty:1
-  });
-
- }
-
-
- save();
-
- alert("Added to cart");
-
-};
-
-
-function save(){
+function saveCart(){
 
  localStorage.setItem(
   "novaCart",
   JSON.stringify(cart)
  );
 
-
- count.textContent=
+ count.textContent =
  cart.reduce(
-  (a,x)=>a+x.qty,
+  (sum,item) =>
+  sum + item.qty,
   0
  );
 
 }
 
 
-window.openCart=()=>{
+/* OPEN CART */
 
- cartItems.innerHTML=
- cart.length
+window.openCart =
+ function(){
 
- ?
+  renderCart();
 
- cart.map(
- x=>{
+  cartModal.classList.add(
+   "show"
+  );
 
-  let p=
-  products[x.id];
-
-  if(!p)return"";
+ };
 
 
-  return `
+/* RENDER CART */
 
-  <div class="cartrow">
+function renderCart(){
 
-  <span>
+ const validCart =
+ cart.filter(
+  item =>
+  products[item.id]
+ );
 
-  ${safe(p.name)}
+ if(
+  validCart.length !==
+  cart.length
+ ){
 
-  <br>
+  cart =
+  validCart;
 
-  ${money(p.price)}
-  × ${x.qty}
+  saveCart();
 
-  </span>
-
-
-  <span>
-
-  <button
-  class="btn secondary"
-  onclick="qty('${x.id}',-1)"
-  >
-  −
-  </button>
-
-  <button
-  class="btn secondary"
-  onclick="qty('${x.id}',1)"
-  >
-  +
-  </button>
-
-  </span>
-
-  </div>
-
-  `;
-
- }).join("")
-
- :
-
- "<p>Your cart is empty.</p>";
+ }
 
 
- let totalAmount=
+ if(!cart.length){
+
+  cartItems.innerHTML =
+  "<p>Your cart is empty.</p>";
+
+ }else{
+
+  cartItems.innerHTML =
+  cart.map(
+   item => {
+
+    const p =
+    products[item.id];
+
+    return `
+
+    <div class="cartrow">
+
+    <div>
+
+    <strong>
+    ${safe(p.name)}
+    </strong>
+
+    <br>
+
+    ${money(p.price)}
+    × ${item.qty}
+
+    </div>
+
+
+    <div>
+
+    <button
+     class="btn secondary"
+     onclick="
+      changeQty(
+       '${item.id}',
+       -1
+      )
+     "
+    >
+    −
+    </button>
+
+    <button
+     class="btn secondary"
+     onclick="
+      changeQty(
+       '${item.id}',
+       1
+      )
+     "
+    >
+    +
+    </button>
+
+    </div>
+
+    </div>
+
+    `;
+
+   }
+  ).join("");
+
+ }
+
+
+ const totalAmount =
  cart.reduce(
-  (a,x)=>
-  a+
-  (products[x.id]?.price||0)*
-  x.qty,
+  (sum,item) =>
+  sum +
+  (
+   Number(
+    products[item.id]?.price || 0
+   )
+   *
+   item.qty
+  ),
   0
  );
 
 
- total.textContent=
- "Total: "+
+ total.textContent =
+ "Total: " +
  money(totalAmount);
 
+ cartMsg.textContent =
+ "";
 
- cartMsg.textContent="";
+ updatePaymentInfo();
 
-
- cartModal.classList.add("show");
-
-};
-
-
-window.qty=(id,n)=>{
-
- let item=
- cart.find(x=>x.id===id);
+ }
 
 
- if(item){
+/* CHANGE QUANTITY */
 
-  item.qty+=n;
+window.changeQty =
+ function(id,change){
 
+  const item =
+  cart.find(
+   x => x.id === id
+  );
 
-  if(item.qty<1){
+  if(!item)return;
 
-   cart=
+  item.qty += change;
+
+  if(item.qty < 1){
+
+   cart =
    cart.filter(
-    y=>y.id!==id
+    x => x.id !== id
    );
 
   }
 
- }
+  saveCart();
+
+  renderCart();
+
+ };
 
 
- save();
+/* PAYMENT INFO */
 
- openCart();
+function updatePaymentInfo(){
 
-};
+ if(
+  paymentMethod.value ===
+  "bank_transfer"
+ ){
 
+  bankInfo.style.display =
+  "block";
 
-window.checkout=async()=>{
+ }else{
 
- if(!cart.length){
-
-  cartMsg.textContent=
-  "Your cart is empty.";
-
-  return;
-
- }
-
-
- if(!user){
-
-  cartMsg.textContent=
-  "Please login first.";
-
-  return;
+  bankInfo.style.display =
+  "none";
 
  }
 
-
- let items=
- cart.map(
- x=>({
-
-  productId:x.id,
-
-  name:
-  products[x.id]?.name||"",
-
-  price:
-  Number(
-   products[x.id]?.price||0
-  ),
-
-  quantity:x.qty
-
- })
- );
+}
 
 
- let totalAmount=
- items.reduce(
-  (a,x)=>
-  a+
-  x.price*x.quantity,
-  0
- );
+paymentMethod.onchange =
+ updatePaymentInfo;
 
 
- let orderRef=
- push(ref(db,"orders"));
+/* CHECKOUT */
 
+window.checkout =
+ async function(){
 
- await set(
-  orderRef,
-  {
+  cartMsg.textContent =
+  "";
 
-   userId:
-   user.uid,
+  if(!cart.length){
 
-   email:
-   user.email,
+   cartMsg.textContent =
+   "Your cart is empty.";
 
-   items:
-   items,
-
-   total:
-   totalAmount,
-
-   status:
-   "pending",
-
-   createdAt:
-   Date.now()
+   return;
 
   }
- );
 
 
- cart=[];
+  if(!user){
 
- save();
+   cartMsg.textContent =
+   "Please create an account or login before placing an order.";
 
+   return;
 
- cartMsg.textContent=
- "Order placed successfully.";
-
-};
-
-
-window.openAccount=()=>{
-
- accountModal.classList.add("show");
-
-};
+  }
 
 
-window.closeM=id=>{
+  const items =
+  cart.map(
+   item => ({
 
- document
- .getElementById(id)
- .classList.remove("show");
+    productId:
+    item.id,
 
-};
+    name:
+    products[item.id]?.name || "",
 
+    price:
+    Number(
+     products[item.id]?.price || 0
+    ),
 
-window.login=async()=>{
+    quantity:
+    item.qty
 
- try{
-
-  await signInWithEmailAndPassword(
-   auth,
-   email.value,
-   password.value
+   })
   );
 
 
-  accountMsg.textContent=
-  "Login successful.";
-
-
-  setTimeout(
-   ()=>closeM("accountModal"),
-   600
+  const totalAmount =
+  items.reduce(
+   (sum,item) =>
+   sum +
+   item.price *
+   item.quantity,
+   0
   );
 
 
- }catch(e){
-
-  accountMsg.textContent=
-  e.message;
-
- }
-
-};
+  const selectedPayment =
+  paymentMethod.value;
 
 
-window.register=async()=>{
+  try{
 
- try{
+   const orderRef =
+   push(
+    ref(db,"orders")
+   );
 
-  let r=
-  await createUserWithEmailAndPassword(
-   auth,
-   email.value,
-   password.value
+
+   await set(
+    orderRef,
+    {
+
+     userId:
+     user.uid,
+
+     email:
+     user.email,
+
+     items:
+     items,
+
+     total:
+     totalAmount,
+
+     paymentMethod:
+     selectedPayment,
+
+     status:
+     "pending",
+
+     createdAt:
+     Date.now()
+
+    }
+   );
+
+
+   cart = [];
+
+   saveCart();
+
+   renderCart();
+
+
+   cartMsg.textContent =
+   "Order placed successfully.";
+
+  }catch(error){
+
+   console.error(error);
+
+   cartMsg.textContent =
+   "Unable to place order: " +
+   error.message;
+
+  }
+
+ };
+
+
+/* ACCOUNT */
+
+window.openAccount =
+ function(){
+
+  accountMsg.textContent =
+  "";
+
+  if(user){
+
+   loginBox.style.display =
+   "none";
+
+   loggedInBox.style.display =
+   "block";
+
+   loggedEmail.textContent =
+   user.email || "";
+
+  }else{
+
+   loginBox.style.display =
+   "block";
+
+   loggedInBox.style.display =
+   "none";
+
+  }
+
+  accountModal.classList.add(
+   "show"
   );
 
+ };
 
-  await set(
-   ref(db,"users/"+r.user.uid),
-   {
 
-    email:
-    r.user.email,
+/* LOGIN */
 
-    createdAt:
-    Date.now()
+window.login =
+ async function(){
+
+  const email =
+  emailInput.value.trim();
+
+  const password =
+  passwordInput.value;
+
+
+  if(!email || !password){
+
+   accountMsg.textContent =
+   "Enter your email and password.";
+
+   return;
+
+  }
+
+
+  accountMsg.textContent =
+  "Signing in...";
+
+
+  try{
+
+   await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+   );
+
+
+   accountMsg.textContent =
+   "Login successful.";
+
+  }catch(error){
+
+   console.error(error);
+
+   if(
+    error.code ===
+    "auth/invalid-credential"
+   ){
+
+    accountMsg.textContent =
+    "Incorrect email or password. You must create an account first.";
+
+   }else if(
+    error.code ===
+    "auth/invalid-email"
+   ){
+
+    accountMsg.textContent =
+    "Please enter a valid email.";
+
+   }else if(
+    error.code ===
+    "auth/too-many-requests"
+   ){
+
+    accountMsg.textContent =
+    "Too many attempts. Please wait and try again.";
+
+   }else{
+
+    accountMsg.textContent =
+    error.message;
 
    }
+
+  }
+
+ };
+
+
+/* REGISTER */
+
+window.register =
+ async function(){
+
+  const email =
+  emailInput.value.trim();
+
+  const password =
+  passwordInput.value;
+
+
+  if(!email || !password){
+
+   accountMsg.textContent =
+   "Enter an email and password.";
+
+   return;
+
+  }
+
+
+  if(password.length < 6){
+
+   accountMsg.textContent =
+   "Password must be at least 6 characters.";
+
+   return;
+
+  }
+
+
+  accountMsg.textContent =
+  "Creating account...";
+
+
+  try{
+
+   const result =
+   await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+   );
+
+
+   await set(
+    ref(
+     db,
+     "users/" +
+     result.user.uid
+    ),
+    {
+
+     email:
+     result.user.email,
+
+     createdAt:
+     Date.now()
+
+    }
+   );
+
+
+   accountMsg.textContent =
+   "Account created successfully.";
+
+  }catch(error){
+
+   console.error(error);
+
+   if(
+    error.code ===
+    "auth/email-already-in-use"
+   ){
+
+    accountMsg.textContent =
+    "This email already has an account. Please login.";
+
+   }else if(
+    error.code ===
+    "auth/invalid-email"
+   ){
+
+    accountMsg.textContent =
+    "Please enter a valid email.";
+
+   }else{
+
+    accountMsg.textContent =
+    error.message;
+
+   }
+
+  }
+
+ };
+
+
+/* LOGOUT */
+
+window.logoutCustomer =
+ async function(){
+
+  try{
+
+   await signOut(auth);
+
+   accountMsg.textContent =
+   "You have been logged out.";
+
+   loginBox.style.display =
+   "block";
+
+   loggedInBox.style.display =
+   "none";
+
+  }catch(error){
+
+   accountMsg.textContent =
+   error.message;
+
+  }
+
+ };
+
+
+/* CLOSE MODALS */
+
+window.closeM =
+ function(id){
+
+  document
+  .getElementById(id)
+  .classList.remove(
+   "show"
   );
 
-
-  accountMsg.textContent=
-  "Account created successfully.";
+ };
 
 
-  setTimeout(
-   ()=>closeM("accountModal"),
-   600
-  );
+/* INITIAL CART COUNT */
 
-
- }catch(e){
-
-  accountMsg.textContent=
-  e.message;
-
- }
-
-};
-
-
-save();
+saveCart();
 
 </script>
 
