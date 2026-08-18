@@ -71,7 +71,8 @@ header{
 }
 
 .secondary{
- background:#e5e7eb
+ background:#e5e7eb;
+ color:#111827
 }
 
 .hero{
@@ -106,8 +107,7 @@ header{
 
 .products{
  display:grid;
- grid-template-columns:
- repeat(auto-fill,minmax(210px,1fr));
+ grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
  gap:15px;
  padding-bottom:40px
 }
@@ -235,6 +235,11 @@ header{
  margin:10px 0
 }
 
+#accountMsg,
+#cartMsg{
+ margin-top:12px
+}
+
 @media(max-width:650px){
 
  .top{
@@ -266,7 +271,6 @@ header{
 
 }
 </style>
-
 </head>
 
 <body>
@@ -309,13 +313,9 @@ Login
 
 <div>
 
-<h1>
-Welcome to NovaStore
-</h1>
+<h1>Welcome to NovaStore</h1>
 
-<p>
-Quality products at great prices.
-</p>
+<p>Quality products at great prices.</p>
 
 </div>
 
@@ -340,9 +340,7 @@ All categories
  class="products"
 >
 
-<p>
-Loading products...
-</p>
+<p>Loading products...</p>
 
 </main>
 
@@ -356,7 +354,7 @@ Loading products...
 </footer>
 
 
-<!-- ACCOUNT MODAL -->
+<!-- ACCOUNT -->
 
 <div
  id="accountModal"
@@ -365,9 +363,10 @@ Loading products...
 
 <div class="panel">
 
-<h2>
-Customer Account
-</h2>
+<h2>Customer Account</h2>
+
+
+<!-- LOGGED IN -->
 
 <div
  id="loggedInBox"
@@ -403,15 +402,13 @@ Close
 </div>
 
 
-<div
- id="loginBox"
->
+<!-- LOGIN -->
+
+<div id="loginBox">
 
 <div class="field">
 
-<label>
-Email
-</label>
+<label>Email</label>
 
 <input
  id="email"
@@ -424,9 +421,7 @@ Email
 
 <div class="field">
 
-<label>
-Password
-</label>
+<label>Password</label>
 
 <input
  id="password"
@@ -440,6 +435,7 @@ Password
 <div class="actions">
 
 <button
+ id="loginBtn"
  class="btn primary"
  onclick="login()"
 >
@@ -447,6 +443,7 @@ Login
 </button>
 
 <button
+ id="registerBtn"
  class="btn green"
  onclick="register()"
 >
@@ -464,16 +461,15 @@ Close
 
 </div>
 
-<p
- id="accountMsg"
-></p>
+
+<p id="accountMsg"></p>
 
 </div>
 
 </div>
 
 
-<!-- CART MODAL -->
+<!-- CART -->
 
 <div
  id="cartModal"
@@ -482,9 +478,7 @@ Close
 
 <div class="panel">
 
-<h2>
-Your Cart
-</h2>
+<h2>Your Cart</h2>
 
 <div id="cartItems"></div>
 
@@ -492,11 +486,10 @@ Your Cart
 Total: ₦0
 </h3>
 
+
 <div class="field">
 
-<label>
-Payment method
-</label>
+<label>Payment method</label>
 
 <select id="paymentMethod">
 
@@ -521,11 +514,7 @@ Cash on Delivery
 <strong>Bank Transfer</strong>
 
 <p>
-After placing your order, contact NovaStore for the current bank-transfer details.
-</p>
-
-<p>
-Do not send money to an unverified account.
+Your order will be recorded first. Only send payment using official NovaStore payment details.
 </p>
 
 </div>
@@ -587,7 +576,7 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-/* FIREBASE */
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
 
@@ -618,24 +607,40 @@ const firebaseConfig = {
 };
 
 
-const app =
+/* FIREBASE */
+
+const firebaseApp =
  initializeApp(firebaseConfig);
 
 const db =
- getDatabase(app);
+ getDatabase(firebaseApp);
 
 const auth =
- getAuth(app);
+ getAuth(firebaseApp);
 
 
-/* VARIABLES */
+/* DATA */
 
 let products = {};
 
-let cart =
+let cart = [];
+
+try{
+
+ cart =
  JSON.parse(
   localStorage.getItem("novaCart") || "[]"
  );
+
+ if(!Array.isArray(cart)){
+  cart=[];
+ }
+
+}catch{
+
+ cart=[];
+
+}
 
 let user = null;
 
@@ -696,51 +701,66 @@ const paymentMethod =
 const bankInfo =
  document.getElementById("bankInfo");
 
+const loginBtn =
+ document.getElementById("loginBtn");
+
+const registerBtn =
+ document.getElementById("registerBtn");
+
 
 /* MONEY */
 
-const money = n =>
- "₦" +
+function money(n){
+
+ return "₦" +
  Number(n || 0)
  .toLocaleString("en-NG");
+
+}
 
 
 /* SAFE TEXT */
 
-const safe = s =>
- String(s ?? "")
+function safe(s){
+
+ return String(s ?? "")
  .replace(
   /[&<>"']/g,
-  c => ({
-   "&":"&amp;",
-   "<":"&lt;",
-   ">":"&gt;",
-   '"':"&quot;",
-   "'":"&#039;"
-  }[c])
+  function(c){
+
+   return {
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+   }[c];
+
+  }
  );
+
+}
 
 
 /* LOAD PRODUCTS */
 
 onValue(
  ref(db,"products"),
+
  snapshot => {
 
   products =
   snapshot.val() || {};
 
-  renderCats();
+  renderCategories();
 
-  render();
+  renderProducts();
 
  },
+
  error => {
 
-  console.error(
-   "Products error:",
-   error
-  );
+  console.error(error);
 
   productsBox.innerHTML =
   "<p>Unable to load products.</p>";
@@ -753,6 +773,7 @@ onValue(
 
 onAuthStateChanged(
  auth,
+
  currentUser => {
 
   user =
@@ -771,6 +792,9 @@ onAuthStateChanged(
    accountButton.textContent =
    "Login";
 
+   loggedEmail.textContent =
+   "";
+
   }
 
  }
@@ -779,7 +803,7 @@ onAuthStateChanged(
 
 /* CATEGORIES */
 
-function renderCats(){
+function renderCategories(){
 
  const old =
  categoryInput.value;
@@ -800,167 +824,163 @@ function renderCats(){
 
  categories
  .map(
-  x =>
-  `<option value="${safe(x)}">
-   ${safe(x)}
+  category =>
+  `<option value="${safe(category)}">
+   ${safe(category)}
   </option>`
  )
  .join("");
 
- categoryInput.value =
- categories.includes(old)
- ? old
- : "all";
+ if(categories.includes(old)){
+
+  categoryInput.value=old;
+
+ }else{
+
+  categoryInput.value="all";
+
+ }
 
 }
 
 
 /* PRODUCTS */
 
-function render(){
+function renderProducts(){
 
- const q =
+ const search =
  searchInput.value
  .toLowerCase()
  .trim();
 
- const c =
+ const selectedCategory =
  categoryInput.value;
 
  const list =
  Object.entries(products)
  .filter(
-  ([id,p]) =>
+  ([id,p]) => {
 
-  (p.name || "")
-  .toLowerCase()
-  .includes(q)
+   const name =
+   String(p.name || "")
+   .toLowerCase();
 
-  &&
+   const matchesSearch =
+   name.includes(search);
 
-  (
-   c === "all" ||
-   p.category === c
-  )
+   const matchesCategory =
+   selectedCategory === "all" ||
+   p.category === selectedCategory;
 
-  &&
+   const available =
+   p.available !== false;
 
-  p.available !== false
+   return (
+    matchesSearch &&
+    matchesCategory &&
+    available
+   );
+
+  }
  );
 
 
+ if(!list.length){
+
+  productsBox.innerHTML =
+  "<p>No products found.</p>";
+
+  return;
+
+ }
+
+
  productsBox.innerHTML =
- list.length
-
- ?
-
  list.map(
-  ([id,p]) => `
+  ([id,p]) => {
 
-  <article class="card">
-
-  <div class="pic">
-
-  ${
+   const image =
    p.image
-
    ?
-
    `<img
     src="${safe(p.image)}"
     alt="${safe(p.name)}"
-    onerror="
-     this.style.display='none'
-    "
+    onerror="this.style.display='none'"
    >`
-
    :
-
-   "🛍️"
-  }
-
-  </div>
+   "🛍️";
 
 
-  <div class="info">
-
-  <div class="cat">
-
-  ${safe(
-   p.category ||
-   "General"
-  )}
-
-  </div>
-
-
-  <div class="name">
-
-  ${safe(p.name)}
-
-  </div>
-
-
-  ${
+   const oldPrice =
    p.oldPrice
-
    ?
-
    `<div class="old">
-   ${money(p.oldPrice)}
+    ${money(p.oldPrice)}
    </div>`
-
    :
+   "";
 
-   ""
+
+   return `
+
+   <article class="card">
+
+   <div class="pic">
+   ${image}
+   </div>
+
+   <div class="info">
+
+   <div class="cat">
+   ${safe(p.category || "General")}
+   </div>
+
+   <div class="name">
+   ${safe(p.name)}
+   </div>
+
+   ${oldPrice}
+
+   <div class="price">
+   ${money(p.price)}
+   </div>
+
+   <small>
+   ${safe(
+    p.description ||
+    "Available now"
+   )}
+   </small>
+
+   <button
+    class="btn green add"
+    onclick="addToCart('${id}')"
+   >
+   Add to Cart
+   </button>
+
+   </div>
+
+   </article>
+
+   `;
+
   }
-
-
-  <div class="price">
-
-  ${money(p.price)}
-
-  </div>
-
-
-  <small>
-
-  ${safe(
-   p.description ||
-   "Available now"
-  )}
-
-  </small>
-
-
-  <button
-   class="btn green add"
-   onclick="addToCart('${id}')"
-  >
-
-  Add to Cart
-
-  </button>
-
-  </div>
-
-  </article>
-
-  `
- ).join("")
-
- :
-
- "<p>No products found.</p>";
+ ).join("");
 
 }
 
 
-searchInput.oninput =
- render;
+searchInput.addEventListener(
+ "input",
+ renderProducts
+);
 
-categoryInput.onchange =
- render;
+
+categoryInput.addEventListener(
+ "change",
+ renderProducts
+);
 
 
 /* ADD TO CART */
@@ -968,27 +988,26 @@ categoryInput.onchange =
 window.addToCart =
  function(id){
 
-  const product =
-  products[id];
-
-  if(!product){
+  if(!products[id]){
 
    alert(
-    "Product is no longer available."
+    "This product is unavailable."
    );
 
    return;
 
   }
 
+
   const existing =
   cart.find(
-   x => x.id === id
+   item => item.id === id
   );
+
 
   if(existing){
 
-   existing.qty++;
+   existing.qty += 1;
 
   }else{
 
@@ -998,6 +1017,7 @@ window.addToCart =
    });
 
   }
+
 
   saveCart();
 
@@ -1017,10 +1037,11 @@ function saveCart(){
   JSON.stringify(cart)
  );
 
+
  count.textContent =
  cart.reduce(
   (sum,item) =>
-  sum + item.qty,
+  sum + Number(item.qty || 0),
   0
  );
 
@@ -1045,23 +1066,14 @@ window.openCart =
 
 function renderCart(){
 
- const validCart =
+ cart =
  cart.filter(
   item =>
   products[item.id]
  );
 
- if(
-  validCart.length !==
-  cart.length
- ){
 
-  cart =
-  validCart;
-
-  saveCart();
-
- }
+ saveCart();
 
 
  if(!cart.length){
@@ -1094,7 +1106,6 @@ function renderCart(){
     × ${item.qty}
 
     </div>
-
 
     <div>
 
@@ -1143,7 +1154,7 @@ function renderCart(){
     products[item.id]?.price || 0
    )
    *
-   item.qty
+   Number(item.qty || 0)
   ),
   0
  );
@@ -1153,12 +1164,11 @@ function renderCart(){
  "Total: " +
  money(totalAmount);
 
- cartMsg.textContent =
- "";
+ cartMsg.textContent="";
 
  updatePaymentInfo();
 
- }
+}
 
 
 /* CHANGE QUANTITY */
@@ -1173,9 +1183,13 @@ window.changeQty =
 
   if(!item)return;
 
-  item.qty += change;
 
-  if(item.qty < 1){
+  item.qty =
+  Number(item.qty || 0) +
+  change;
+
+
+  if(item.qty <= 0){
 
    cart =
    cart.filter(
@@ -1184,6 +1198,7 @@ window.changeQty =
 
   }
 
+
   saveCart();
 
   renderCart();
@@ -1191,7 +1206,7 @@ window.changeQty =
  };
 
 
-/* PAYMENT INFO */
+/* PAYMENT */
 
 function updatePaymentInfo(){
 
@@ -1213,8 +1228,10 @@ function updatePaymentInfo(){
 }
 
 
-paymentMethod.onchange =
- updatePaymentInfo;
+paymentMethod.addEventListener(
+ "change",
+ updatePaymentInfo
+);
 
 
 /* CHECKOUT */
@@ -1222,8 +1239,8 @@ paymentMethod.onchange =
 window.checkout =
  async function(){
 
-  cartMsg.textContent =
-  "";
+  cartMsg.textContent="";
+
 
   if(!cart.length){
 
@@ -1238,7 +1255,7 @@ window.checkout =
   if(!user){
 
    cartMsg.textContent =
-   "Please create an account or login before placing an order.";
+   "Please login or create an account first.";
 
    return;
 
@@ -1261,13 +1278,13 @@ window.checkout =
     ),
 
     quantity:
-    item.qty
+    Number(item.qty || 0)
 
    })
   );
 
 
-  const totalAmount =
+  const orderTotal =
   items.reduce(
    (sum,item) =>
    sum +
@@ -1275,10 +1292,6 @@ window.checkout =
    item.quantity,
    0
   );
-
-
-  const selectedPayment =
-  paymentMethod.value;
 
 
   try{
@@ -1303,10 +1316,10 @@ window.checkout =
      items,
 
      total:
-     totalAmount,
+     orderTotal,
 
      paymentMethod:
-     selectedPayment,
+     paymentMethod.value,
 
      status:
      "pending",
@@ -1318,7 +1331,7 @@ window.checkout =
    );
 
 
-   cart = [];
+   cart=[];
 
    saveCart();
 
@@ -1333,7 +1346,7 @@ window.checkout =
    console.error(error);
 
    cartMsg.textContent =
-   "Unable to place order: " +
+   "Order failed: " +
    error.message;
 
   }
@@ -1341,13 +1354,13 @@ window.checkout =
  };
 
 
-/* ACCOUNT */
+/* OPEN ACCOUNT */
 
 window.openAccount =
  function(){
 
-  accountMsg.textContent =
-  "";
+  accountMsg.textContent="";
+
 
   if(user){
 
@@ -1370,6 +1383,7 @@ window.openAccount =
 
   }
 
+
   accountModal.classList.add(
    "show"
   );
@@ -1389,22 +1403,44 @@ window.login =
   passwordInput.value;
 
 
-  if(!email || !password){
+  if(!email){
 
    accountMsg.textContent =
-   "Enter your email and password.";
+   "Enter your email.";
 
    return;
 
   }
 
 
+  if(!password){
+
+   accountMsg.textContent =
+   "Enter your password.";
+
+   return;
+
+  }
+
+
+  loginBtn.disabled=true;
+
+  registerBtn.disabled=true;
+
   accountMsg.textContent =
-  "Signing in...";
+  "Checking your account...";
 
 
   try{
 
+   /*
+    IMPORTANT:
+    Firebase Authentication itself
+    decides whether the email/password
+    are valid.
+   */
+
+   const result =
    await signInWithEmailAndPassword(
     auth,
     email,
@@ -1412,12 +1448,56 @@ window.login =
    );
 
 
+   /*
+    Verify that Firebase actually
+    returned a user.
+   */
+
+   if(
+    !result ||
+    !result.user
+   ){
+
+    throw new Error(
+     "Firebase did not authenticate this account."
+    );
+
+   }
+
+
+   user =
+   result.user;
+
+
    accountMsg.textContent =
    "Login successful.";
 
+
+   loggedEmail.textContent =
+   user.email || "";
+
+   loginBox.style.display =
+   "none";
+
+   loggedInBox.style.display =
+   "block";
+
+
   }catch(error){
 
-   console.error(error);
+   console.error(
+    "LOGIN ERROR:",
+    error
+   );
+
+
+   /*
+    If Firebase rejects the credentials,
+    the user MUST NOT be treated as logged in.
+   */
+
+   user=null;
+
 
    if(
     error.code ===
@@ -1425,7 +1505,23 @@ window.login =
    ){
 
     accountMsg.textContent =
-    "Incorrect email or password. You must create an account first.";
+    "Incorrect email or password.";
+
+   }else if(
+    error.code ===
+    "auth/user-not-found"
+   ){
+
+    accountMsg.textContent =
+    "No account exists with this email.";
+
+   }else if(
+    error.code ===
+    "auth/wrong-password"
+   ){
+
+    accountMsg.textContent =
+    "Incorrect password.";
 
    }else if(
     error.code ===
@@ -1441,14 +1537,21 @@ window.login =
    ){
 
     accountMsg.textContent =
-    "Too many attempts. Please wait and try again.";
+    "Too many attempts. Please try again later.";
 
    }else{
 
     accountMsg.textContent =
-    error.message;
+    error.message ||
+    "Login failed.";
 
    }
+
+  }finally{
+
+   loginBtn.disabled=false;
+
+   registerBtn.disabled=false;
 
   }
 
@@ -1467,10 +1570,20 @@ window.register =
   passwordInput.value;
 
 
-  if(!email || !password){
+  if(!email){
 
    accountMsg.textContent =
-   "Enter an email and password.";
+   "Enter your email.";
+
+   return;
+
+  }
+
+
+  if(!password){
+
+   accountMsg.textContent =
+   "Enter a password.";
 
    return;
 
@@ -1486,6 +1599,10 @@ window.register =
 
   }
 
+
+  loginBtn.disabled=true;
+
+  registerBtn.disabled=true;
 
   accountMsg.textContent =
   "Creating account...";
@@ -1519,12 +1636,27 @@ window.register =
    );
 
 
+   user =
+   result.user;
+
+
    accountMsg.textContent =
    "Account created successfully.";
+
+   loggedEmail.textContent =
+   user.email || "";
+
+   loginBox.style.display =
+   "none";
+
+   loggedInBox.style.display =
+   "block";
+
 
   }catch(error){
 
    console.error(error);
+
 
    if(
     error.code ===
@@ -1542,12 +1674,27 @@ window.register =
     accountMsg.textContent =
     "Please enter a valid email.";
 
+   }else if(
+    error.code ===
+    "auth/weak-password"
+   ){
+
+    accountMsg.textContent =
+    "Password must be at least 6 characters.";
+
    }else{
 
     accountMsg.textContent =
-    error.message;
+    error.message ||
+    "Could not create account.";
 
    }
+
+  }finally{
+
+   loginBtn.disabled=false;
+
+   registerBtn.disabled=false;
 
   }
 
@@ -1563,14 +1710,19 @@ window.logoutCustomer =
 
    await signOut(auth);
 
-   accountMsg.textContent =
-   "You have been logged out.";
+   user=null;
+
+   loggedInBox.style.display =
+   "none";
 
    loginBox.style.display =
    "block";
 
-   loggedInBox.style.display =
-   "none";
+   accountButton.textContent =
+   "Login";
+
+   accountMsg.textContent =
+   "You have been logged out.";
 
   }catch(error){
 
@@ -1582,7 +1734,7 @@ window.logoutCustomer =
  };
 
 
-/* CLOSE MODALS */
+/* CLOSE MODAL */
 
 window.closeM =
  function(id){
@@ -1596,9 +1748,11 @@ window.closeM =
  };
 
 
-/* INITIAL CART COUNT */
+/* INITIALIZE */
 
 saveCart();
+
+updatePaymentInfo();
 
 </script>
 
