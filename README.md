@@ -1,1005 +1,410 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="NovaStore - Quality products at great prices.">
-<title>NovaStore | Quality Products</title>
 
-<!-- Paystack -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<head>
+
+<meta charset="utf-8">
+
+<meta
+ name="viewport"
+ content="width=device-width,initial-scale=1"
+>
+
+<title>NovaStore</title>
 
 <style>
+
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
+ box-sizing:border-box;
+ font-family:Arial,sans-serif
 }
 
 body{
-    background:#f5f6f8;
-    color:#222;
+ margin:0;
+ background:#f5f6f8;
+ color:#172033
 }
 
-button,input{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-    border:0;
-}
-
-a{
-    text-decoration:none;
-    color:inherit;
-}
-
-.header{
-    background:#111827;
-    color:#fff;
-    position:sticky;
-    top:0;
-    z-index:20;
+header{
+ background:#111827;
+ color:#fff;
+ position:sticky;
+ top:0;
+ z-index:5
 }
 
 .top{
-    max-width:1200px;
-    margin:auto;
-    padding:15px 20px;
-    display:flex;
-    align-items:center;
-    gap:15px;
+ max-width:1100px;
+ margin:auto;
+ padding:14px;
+ display:flex;
+ gap:10px;
+ align-items:center
 }
 
 .logo{
-    font-size:25px;
-    font-weight:800;
-    color:#fff;
-    white-space:nowrap;
-}
-
-.logo span{
-    color:#22c55e;
+ font-size:22px;
+ font-weight:800;
+ flex:1
 }
 
 .search{
-    flex:1;
-    display:flex;
-    background:#fff;
-    border-radius:8px;
-    overflow:hidden;
+ flex:2;
+ padding:11px;
+ border-radius:8px;
+ border:0
 }
 
-.search input{
-    width:100%;
-    padding:12px;
-    border:0;
-    outline:0;
-}
-
-.search button{
-    padding:0 16px;
-    background:#22c55e;
-    color:#fff;
-}
-
-.nav{
-    display:flex;
-    gap:7px;
-}
-
-.nav button{
-    background:#1f2937;
-    color:#fff;
-    padding:9px 11px;
-    border-radius:7px;
-}
-
-.nav button:hover{
-    background:#374151;
-}
-
-.badge{
-    background:#ef4444;
-    border-radius:20px;
-    padding:2px 7px;
-    font-size:11px;
+.btn{
+ padding:10px 13px;
+ border:0;
+ border-radius:8px;
+ cursor:pointer
 }
 
 .hero{
-    background:linear-gradient(135deg,#111827,#1f2937);
-    color:white;
-    padding:55px 20px;
+ max-width:1100px;
+ margin:18px auto;
+ padding:25px
 }
 
-.hero-inner{
-    max-width:1200px;
-    margin:auto;
+.hero div{
+ background:#111827;
+ color:#fff;
+ padding:30px;
+ border-radius:18px
 }
 
-.hero h1{
-    font-size:42px;
-    margin-bottom:12px;
+.filters,
+.products{
+ max-width:1100px;
+ margin:auto;
+ padding:0 15px
 }
 
-.hero p{
-    font-size:18px;
-    color:#d1d5db;
-    max-width:600px;
-    line-height:1.6;
+.filters{
+ margin-bottom:15px
 }
 
-.hero button{
-    margin-top:22px;
-    background:#22c55e;
-    color:#fff;
-    padding:13px 22px;
-    border-radius:8px;
-    font-weight:bold;
-}
-
-.section{
-    max-width:1200px;
-    margin:auto;
-    padding:35px 20px;
-}
-
-.section-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.section-title h2{
-    font-size:25px;
-}
-
-.categories{
-    display:flex;
-    gap:10px;
-    overflow:auto;
-    padding-bottom:8px;
-}
-
-.cat{
-    padding:10px 16px;
-    border-radius:25px;
-    background:#fff;
-    border:1px solid #ddd;
-    white-space:nowrap;
-}
-
-.cat.active,
-.cat:hover{
-    background:#111827;
-    color:#fff;
+.filters select{
+ padding:10px;
+ border:1px solid #ddd;
+ border-radius:8px
 }
 
 .products{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
+ display:grid;
+ grid-template-columns:
+ repeat(auto-fill,minmax(210px,1fr));
+ gap:15px;
+ padding-bottom:40px
 }
 
 .card{
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 2px 10px #00000012;
-    border:1px solid #eee;
+ background:#fff;
+ border-radius:13px;
+ overflow:hidden;
+ box-shadow:0 2px 9px #0001
 }
 
 .pic{
-    height:190px;
-    background:#eef2f7;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:75px;
+ height:175px;
+ background:#eee;
+ display:flex;
+ align-items:center;
+ justify-content:center
+}
+
+.pic img{
+ width:100%;
+ height:100%;
+ object-fit:cover
 }
 
 .info{
-    padding:15px;
+ padding:14px
 }
 
-.info h3{
-    font-size:17px;
-    margin-bottom:8px;
+.cat{
+ font-size:12px;
+ color:#687386
 }
 
-.info p{
-    color:#666;
-    font-size:13px;
-    min-height:34px;
-}
-
-.price{
-    font-weight:800;
-    font-size:19px;
-    margin:12px 0;
+.name{
+ font-weight:bold;
+ margin:7px 0
 }
 
 .old{
-    font-size:13px;
-    color:#999;
-    text-decoration:line-through;
-    margin-left:6px;
+ text-decoration:line-through;
+ color:#888;
+ font-size:13px
+}
+
+.price{
+ font-size:19px;
+ font-weight:bold;
+ margin:6px 0
 }
 
 .add{
-    width:100%;
-    background:#111827;
-    color:#fff;
-    padding:11px;
-    border-radius:7px;
-}
-
-.add:hover{
-    background:#22c55e;
-}
-
-.empty{
-    text-align:center;
-    padding:30px;
-    grid-column:1/-1;
-    color:#777;
-}
-
-.quick-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-
-.quick-card{
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    border:1px solid #eee;
-    text-align:center;
-    box-shadow:0 2px 8px #00000010;
-}
-
-.quick-card .icon{
-    font-size:35px;
-    margin-bottom:10px;
-}
-
-.quick-card h3{
-    margin-bottom:7px;
-}
-
-.quick-card p{
-    color:#666;
-    font-size:13px;
-    line-height:1.5;
-}
-
-.quick-card button{
-    margin-top:12px;
-    background:#111827;
-    color:white;
-    padding:9px 15px;
-    border-radius:7px;
-}
-
-.deal-box{
-    background:#fff;
-    border-radius:12px;
-    padding:25px;
-    border:1px solid #eee;
-}
-
-.deal-box h2{
-    margin-bottom:8px;
-}
-
-.deal-box p{
-    color:#666;
-    line-height:1.6;
-}
-
-.deposit-box{
-    background:#fff;
-    padding:25px;
-    border-radius:12px;
-    border:1px solid #eee;
-    max-width:600px;
-}
-
-.balance{
-    background:#f0fdf4;
-    border:1px solid #bbf7d0;
-    padding:18px;
-    border-radius:10px;
-    margin-bottom:18px;
-}
-
-.balance small{
-    color:#666;
-}
-
-.balance strong{
-    display:block;
-    font-size:28px;
-    margin-top:5px;
-    color:#15803d;
-}
-
-.deposit-input{
-    width:100%;
-    padding:13px;
-    border:1px solid #ccc;
-    border-radius:7px;
-    outline:0;
-    margin:8px 0 12px;
-}
-
-.green-btn{
-    width:100%;
-    padding:13px;
-    background:#22c55e;
-    color:#fff;
-    border-radius:7px;
-    font-weight:bold;
-}
-
-footer{
-    background:#111827;
-    color:#d1d5db;
-    padding:40px 20px;
-    margin-top:20px;
-}
-
-.footer-inner{
-    max-width:1200px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:30px;
-}
-
-footer h3{
-    color:#fff;
-    margin-bottom:12px;
-}
-
-footer p{
-    line-height:1.8;
-    font-size:14px;
-}
-
-.modal-bg{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:#0008;
-    z-index:50;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+ width:100%;
+ background:#16a34a;
+ color:white;
+ margin-top:10px
 }
 
 .modal{
-    background:#fff;
-    width:100%;
-    max-width:450px;
-    border-radius:12px;
-    padding:24px;
-    position:relative;
-    max-height:90vh;
-    overflow:auto;
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ z-index:10;
+ padding:15px;
+ overflow:auto
 }
 
-.close{
-    position:absolute;
-    right:15px;
-    top:12px;
-    background:#eee;
-    width:32px;
-    height:32px;
-    border-radius:50%;
+.modal.show{
+ display:block
 }
 
-.modal h2{
-    margin-bottom:18px;
+.panel{
+ background:white;
+ max-width:600px;
+ margin:30px auto;
+ padding:20px;
+ border-radius:14px
 }
 
-.form-group{
-    margin-bottom:13px;
+.field{
+ margin:10px 0
 }
 
-.form-group label{
-    display:block;
-    font-size:13px;
-    margin-bottom:6px;
+.field label{
+ display:block;
+ font-size:13px;
+ font-weight:bold;
+ margin-bottom:5px
 }
 
-.form-group input{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:7px;
-    outline:0;
+.field input,
+.field textarea{
+ width:100%;
+ padding:11px;
+ border:1px solid #ddd;
+ border-radius:8px
 }
 
-.form-btn{
-    width:100%;
-    padding:12px;
-    background:#111827;
-    color:#fff;
-    border-radius:7px;
-    margin-top:5px;
+.actions{
+ display:flex;
+ gap:8px;
+ margin-top:15px;
+ flex-wrap:wrap
 }
 
-.switch{
-    margin-top:15px;
-    text-align:center;
-    font-size:14px;
+.primary{
+ background:#111827;
+ color:#fff
 }
 
-.switch a{
-    color:#16a34a;
-    font-weight:bold;
-    cursor:pointer;
+.secondary{
+ background:#e5e7eb
 }
 
-.cart-item{
-    display:flex;
-    gap:12px;
-    padding:12px 0;
-    border-bottom:1px solid #eee;
-    align-items:center;
-}
-
-.cart-icon{
-    font-size:35px;
-}
-
-.cart-details{
-    flex:1;
-}
-
-.qty{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    margin-top:6px;
-    flex-wrap:wrap;
-}
-
-.qty button{
-    width:27px;
-    height:27px;
-    border-radius:5px;
-    background:#eee;
-}
-
-.remove-btn{
-    width:auto !important;
-    padding:0 8px;
-}
-
-.cart-total{
-    font-size:20px;
-    font-weight:bold;
-    text-align:right;
-    margin:18px 0;
-}
-
-.checkout{
-    width:100%;
-    padding:13px;
-    background:#22c55e;
-    color:#fff;
-    border-radius:7px;
-    font-weight:bold;
-}
-
-.account{
-    background:#f0fdf4;
-    border:1px solid #bbf7d0;
-    padding:12px;
-    border-radius:8px;
-    margin-bottom:15px;
-}
-
-.order{
-    border:1px solid #eee;
-    padding:14px;
-    border-radius:8px;
-    margin-bottom:10px;
-}
-
-.order small{
-    color:#777;
-}
-
-.notice{
-    background:#fff7ed;
-    border:1px solid #fed7aa;
-    padding:12px;
-    border-radius:8px;
-    margin-top:12px;
-    font-size:13px;
-    line-height:1.5;
-}
-
-@media(max-width:900px){
-    .products{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-    .quick-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+.cartrow{
+ display:flex;
+ justify-content:space-between;
+ padding:12px 0;
+ border-bottom:1px solid #eee
 }
 
 @media(max-width:650px){
 
-    .top{
-        flex-wrap:wrap;
-    }
+ .top{
+  flex-wrap:wrap
+ }
 
-    .logo{
-        width:100%;
-    }
+ .search{
+  order:3;
+  flex-basis:100%
+ }
 
-    .search{
-        order:3;
-        flex-basis:100%;
-    }
+ .hero{
+  padding:10px
+ }
 
-    .nav{
-        position:absolute;
-        right:10px;
-        top:10px;
-    }
+ .products{
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:0 10px 30px
+ }
 
-    .hero h1{
-        font-size:32px;
-    }
+ .pic{
+  height:140px
+ }
 
-    .products{
-        grid-template-columns:repeat(2,1fr);
-        gap:12px;
-    }
-
-    .pic{
-        height:150px;
-        font-size:58px;
-    }
-
-    .info{
-        padding:11px;
-    }
-
-    .footer-inner{
-        grid-template-columns:1fr;
-    }
-
-    .section{
-        padding:25px 12px;
-    }
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<header class="header">
+
+<header>
 
 <div class="top">
 
-<a class="logo" href="#" onclick="goHome()">
-Nova<span>Store</span>
-</a>
+<div class="logo">
+NovaStore
+</div>
 
-<div class="search">
 <input
-id="searchInput"
-type="search"
-placeholder="Search products..."
+ id="search"
+ class="search"
+ placeholder="Search products"
 >
-<button onclick="searchProducts()">Search</button>
-</div>
 
-<div class="nav">
-
-<button onclick="openLogin()">
-👤 <span id="accountText">Login</span>
+<button
+ class="btn"
+ onclick="openCart()"
+>
+Cart (<span id="count">0</span>)
 </button>
 
-<button onclick="openCart()">
-🛒 <span class="badge" id="cartCount">0</span>
+<button
+ class="btn"
+ id="account"
+ onclick="openAccount()"
+>
+Login
 </button>
-
-</div>
 
 </div>
 
 </header>
 
 
-<!-- HERO -->
-
-<section class="hero" id="home">
-
-<div class="hero-inner">
-
-<h1>Welcome to NovaStore</h1>
-
-<p>
-Discover quality products, great prices and a simple shopping experience.
-</p>
-
-<button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-Shop Now
-</button>
-
-</div>
-
-</section>
-
-
-<!-- QUICK MENU -->
-
-<section class="section">
-
-<div class="section-title">
-<h2>Explore NovaStore</h2>
-</div>
-
-<div class="quick-grid">
-
-<div class="quick-card">
-
-<div class="icon">🛍️</div>
-
-<h3>Shop</h3>
-
-<p>Browse all our available products.</p>
-
-<button onclick="goTo('products')">
-Shop Now
-</button>
-
-</div>
-
-
-<div class="quick-card">
-
-<div class="icon">🔥</div>
-
-<h3>Deals</h3>
-
-<p>Find selected products with special prices.</p>
-
-<button onclick="goTo('deals')">
-View Deals
-</button>
-
-</div>
-
-
-<div class="quick-card">
-
-<div class="icon">💰</div>
-
-<h3>Deposit</h3>
-
-<p>Add funds to your NovaStore account using Paystack.</p>
-
-<button onclick="openDeposit()">
-Deposit
-</button>
-
-</div>
-
-
-<div class="quick-card">
-
-<div class="icon">📦</div>
-
-<h3>My Orders</h3>
-
-<p>View orders made from this browser.</p>
-
-<button onclick="openOrders()">
-Orders
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CATEGORIES -->
-
-<section class="section" id="categories">
-
-<div class="section-title">
-<h2>Categories</h2>
-</div>
-
-<div class="categories">
-
-<button class="cat active" onclick="filterCategory('All',this)">
-All
-</button>
-
-<button class="cat" onclick="filterCategory('Electronics',this)">
-Electronics
-</button>
-
-<button class="cat" onclick="filterCategory('Fashion',this)">
-Fashion
-</button>
-
-<button class="cat" onclick="filterCategory('Home',this)">
-Home
-</button>
-
-<button class="cat" onclick="filterCategory('Accessories',this)">
-Accessories
-</button>
-
-</div>
-
-</section>
-
-
-<!-- PRODUCTS -->
-
-<section class="section" id="products">
-
-<div class="section-title">
-
-<h2>Featured Products</h2>
-
-</div>
-
-<div class="products" id="productGrid"></div>
-
-</section>
-
-
-<!-- DEALS -->
-
-<section class="section" id="deals">
-
-<div class="section-title">
-<h2>🔥 Today's Deals</h2>
-</div>
-
-<div class="deal-box">
-
-<h2>Save More at NovaStore</h2>
-
-<p>
-Check our products for special prices and discounts.
-Add your favourite products to your cart and continue to checkout.
-</p>
-
-<br>
-
-<button
-class="green-btn"
-style="max-width:220px"
-onclick="goTo('products')"
->
-Shop Deals
-</button>
-
-</div>
-
-</section>
-
-
-<!-- DEPOSIT -->
-
-<section class="section" id="depositSection">
-
-<div class="section-title">
-<h2>💰 Deposit</h2>
-</div>
-
-<div class="deposit-box">
-
-<div class="balance">
-
-<small>NovaStore Balance</small>
-
-<strong>
-₦<span id="balanceAmount">0</span>
-</strong>
-
-</div>
-
-<h3>Deposit Funds</h3>
-
-<p style="color:#666;margin:8px 0 5px">
-Enter the amount you want to deposit.
-</p>
-
-<input
-id="depositAmount"
-class="deposit-input"
-type="number"
-min="100"
-placeholder="Enter amount e.g. 5000"
->
-
-<button
-class="green-btn"
-onclick="startDeposit()"
->
-Pay with Paystack
-</button>
-
-<div class="notice">
-
-<strong>Test Mode:</strong>
-Payments are currently processed using your Paystack test key.
-Do not use real money while testing.
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-<div class="footer-inner">
+<section class="hero">
 
 <div>
 
-<h3>NovaStore</h3>
+<h1>
+Welcome to NovaStore
+</h1>
 
 <p>
-Quality products for everyday life.
+Quality products at great prices.
 </p>
 
 </div>
 
-<div>
+</section>
 
-<h3>Customer Service</h3>
+
+<div class="filters">
+
+<select id="category">
+
+<option value="all">
+All categories
+</option>
+
+</select>
+
+</div>
+
+
+<main
+ id="products"
+ class="products"
+>
 
 <p>
-Contact us through your preferred channel for help with orders and products.
+Loading products...
 </p>
 
-</div>
+</main>
 
-<div>
 
-<h3>Quick Links</h3>
+<footer
+ style="text-align:center;padding:30px;color:#687386"
+>
 
-<p>
-
-<a href="#home">
-Home
-</a>
-<br>
-
-<a href="#products">
-Products
-</a>
-<br>
-
-<a href="#categories">
-Categories
-</a>
-<br>
-
-<a href="#depositSection">
-Deposit
-</a>
-<br>
-
-<a href="#" onclick="openCart();return false">
-Shopping Cart
-</a>
-<br>
-
-<a href="#" onclick="openLogin();return false">
-My Account
-</a>
-
-</p>
-
-</div>
-
-</div>
+© 2026 NovaStore
 
 </footer>
 
 
-<!-- LOGIN / REGISTER -->
+<!-- ACCOUNT -->
 
-<div class="modal-bg" id="loginModal">
+<div
+ id="accountModal"
+ class="modal"
+>
 
-<div class="modal">
+<div class="panel">
 
-<button class="close" onclick="closeModal('loginModal')">
-×
-</button>
-
-<h2 id="authTitle">
-Login to NovaStore
+<h2>
+Customer Account
 </h2>
 
-<div id="loggedInBox" style="display:none"></div>
+<div class="field">
 
-<form id="authForm" onsubmit="handleAuth(event)">
-
-<div class="form-group" id="nameGroup" style="display:none">
-
-<label>Full name</label>
+<label>
+Email
+</label>
 
 <input
-id="nameInput"
-type="text"
-placeholder="Your name"
+ id="email"
+ type="email"
 >
 
 </div>
 
-<div class="form-group">
 
-<label>Email</label>
+<div class="field">
+
+<label>
+Password
+</label>
 
 <input
-id="emailInput"
-type="email"
-required
-placeholder="you@example.com"
+ id="password"
+ type="password"
 >
 
 </div>
 
-<div class="form-group">
 
-<label>Password</label>
-
-<input
-id="passwordInput"
-type="password"
-required
-minlength="6"
-placeholder="At least 6 characters"
->
-
-</div>
+<div class="actions">
 
 <button
-class="form-btn"
-id="authButton"
+ class="btn primary"
+ onclick="login()"
 >
 Login
 </button>
 
-</form>
+<button
+ class="btn secondary"
+ onclick="register()"
+>
+Create account
+</button>
 
-<div class="switch" id="switchBox">
-
-Don't have an account?
-
-<a onclick="toggleAuth()">
-Create one
-</a>
+<button
+ class="btn secondary"
+ onclick="closeM('accountModal')"
+>
+Close
+</button>
 
 </div>
+
+<p id="accountMsg"></p>
 
 </div>
 
@@ -1008,1339 +413,687 @@ Create one
 
 <!-- CART -->
 
-<div class="modal-bg" id="cartModal">
+<div
+ id="cartModal"
+ class="modal"
+>
 
-<div class="modal">
+<div class="panel">
 
-<button class="close" onclick="closeModal('cartModal')">
-×
-</button>
-
-<h2>Your Cart</h2>
+<h2>
+Your Cart
+</h2>
 
 <div id="cartItems"></div>
 
-<div class="cart-total">
+<h3 id="total"></h3>
 
-Total: ₦<span id="cartTotal">0</span>
-
-</div>
+<div class="actions">
 
 <button
-class="checkout"
-onclick="checkout()"
+ class="btn primary"
+ onclick="checkout()"
 >
-Proceed to Checkout
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ORDERS -->
-
-<div class="modal-bg" id="ordersModal">
-
-<div class="modal">
-
-<button class="close" onclick="closeModal('ordersModal')">
-×
-</button>
-
-<h2>📦 My Orders</h2>
-
-<div id="ordersList"></div>
-
-</div>
-
-</div>
-
-
-<!-- DEPOSIT MODAL -->
-
-<div class="modal-bg" id="depositModal">
-
-<div class="modal">
-
-<button class="close" onclick="closeModal('depositModal')">
-×
-</button>
-
-<h2>💰 Deposit Funds</h2>
-
-<p style="color:#666;margin-bottom:15px">
-Enter the amount you want to add to your NovaStore account.
-</p>
-
-<input
-id="modalDepositAmount"
-class="deposit-input"
-type="number"
-min="100"
-placeholder="Amount in Naira"
->
-
-<button
-class="green-btn"
-onclick="startDeposit(true)"
->
-Continue to Paystack
-</button>
-
-<div class="notice">
-You are currently using Paystack test mode.
-No real money should be used for testing.
-</div>
-
-</div>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-   NOVASTORE PRODUCTS
-===================================================== */
-
-const products = [
-
-{
-id:1,
-name:"Wireless Headphones",
-price:25000,
-old:30000,
-cat:"Electronics",
-icon:"🎧",
-desc:"Comfortable wireless headphones with clear sound."
-},
-
-{
-id:2,
-name:"Smart Watch",
-price:35000,
-old:42000,
-cat:"Electronics",
-icon:"⌚",
-desc:"Smart everyday watch with useful features."
-},
-
-{
-id:3,
-name:"Bluetooth Speaker",
-price:28000,
-old:33000,
-cat:"Electronics",
-icon:"🔊",
-desc:"Portable speaker for music at home or outdoors."
-},
-
-{
-id:4,
-name:"Smartphone",
-price:180000,
-old:200000,
-cat:"Electronics",
-icon:"📱",
-desc:"Modern smartphone for work, study and entertainment."
-},
-
-{
-id:5,
-name:"Laptop",
-price:450000,
-old:500000,
-cat:"Electronics",
-icon:"💻",
-desc:"Reliable laptop for everyday tasks."
-},
-
-{
-id:6,
-name:"Sneakers",
-price:30000,
-old:38000,
-cat:"Fashion",
-icon:"👟",
-desc:"Casual sneakers for everyday use."
-},
-
-{
-id:7,
-name:"Backpack",
-price:22000,
-old:27000,
-cat:"Fashion",
-icon:"🎒",
-desc:"Practical backpack with plenty of room."
-},
-
-{
-id:8,
-name:"Hoodie",
-price:25000,
-old:30000,
-cat:"Fashion",
-icon:"🧥",
-desc:"Comfortable casual hoodie."
-},
-
-{
-id:9,
-name:"Table Lamp",
-price:18000,
-old:22000,
-cat:"Home",
-icon:"💡",
-desc:"Simple modern lamp for your room or desk."
-},
-
-{
-id:10,
-name:"Coffee Maker",
-price:55000,
-old:65000,
-cat:"Home",
-icon:"☕",
-desc:"Easy-to-use coffee maker for home."
-},
-
-{
-id:11,
-name:"Storage Box",
-price:12000,
-old:15000,
-cat:"Home",
-icon:"📦",
-desc:"Useful storage solution for your home."
-},
-
-{
-id:12,
-name:"Phone Case",
-price:8000,
-old:10000,
-cat:"Accessories",
-icon:"📱",
-desc:"Protective case for your smartphone."
-},
-
-{
-id:13,
-name:"Power Bank",
-price:20000,
-old:25000,
-cat:"Accessories",
-icon:"🔋",
-desc:"Portable power for your devices."
-},
-
-{
-id:14,
-name:"Sunglasses",
-price:15000,
-old:19000,
-cat:"Accessories",
-icon:"🕶️",
-desc:"Stylish everyday sunglasses."
-},
-
-{
-id:15,
-name:"USB Cable",
-price:6000,
-old:8000,
-cat:"Accessories",
-icon:"🔌",
-desc:"Durable charging and data cable."
-},
-
-{
-id:16,
-name:"Wireless Mouse",
-price:12000,
-old:15000,
-cat:"Electronics",
-icon:"🖱️",
-desc:"Comfortable wireless mouse for your computer."
-}
-
-];
-
-
-/* =====================================================
-   PAYSTACK
-===================================================== */
-
-const PAYSTACK_PUBLIC_KEY =
-"pk_test_ee58b6e8b48a3efa1e59e6527b5465d521893bb1";
-
-
-/* =====================================================
-   LOCAL DATA
-===================================================== */
-
-let cart =
-JSON.parse(localStorage.getItem("novaCart") || "[]");
-
-let orders =
-JSON.parse(localStorage.getItem("novaOrders") || "[]");
-
-let currentCategory = "All";
-
-let registerMode = false;
-
-let currentUser =
-JSON.parse(localStorage.getItem("novaUser") || "null");
-
-let balance =
-Number(localStorage.getItem("novaBalance") || "0");
-
-
-/* =====================================================
-   MONEY
-===================================================== */
-
-function money(n){
-
-return Number(n).toLocaleString("en-NG");
-
-}
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-function goHome(){
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-
-function goTo(id){
-
-const element =
-document.getElementById(id);
-
-if(element){
-
-element.scrollIntoView({
-behavior:"smooth"
-});
-
-}
-
-}
-
-
-/* =====================================================
-   PRODUCTS
-===================================================== */
-
-function renderProducts(list=products){
-
-const grid =
-document.getElementById("productGrid");
-
-if(!list.length){
-
-grid.innerHTML =
-'<div class="empty">No products found.</div>';
-
-return;
-
-}
-
-grid.innerHTML = list.map(p => `
-
-<div class="card">
-
-<div class="pic">
-${p.icon}
-</div>
-
-<div class="info">
-
-<h3>${p.name}</h3>
-
-<p>${p.desc}</p>
-
-<div class="price">
-
-₦${money(p.price)}
-
-<span class="old">
-₦${money(p.old)}
-</span>
-
-</div>
-
-<button
-class="add"
-onclick="addToCart(${p.id})"
->
-Add to Cart
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =====================================================
-   CART
-===================================================== */
-
-function addToCart(id){
-
-const found =
-cart.find(x => x.id === id);
-
-if(found){
-
-found.qty++;
-
-}else{
-
-cart.push({
-id:id,
-qty:1
-});
-
-}
-
-saveCart();
-
-updateCartCount();
-
-alert("Product added to your cart.");
-
-}
-
-
-function saveCart(){
-
-localStorage.setItem(
-"novaCart",
-JSON.stringify(cart)
-);
-
-}
-
-
-function updateCartCount(){
-
-document.getElementById("cartCount")
-.textContent =
-cart.reduce(
-(total,item) => total + item.qty,
-0
-);
-
-}
-
-
-function openCart(){
-
-renderCart();
-
-document.getElementById("cartModal")
-.style.display="flex";
-
-}
-
-
-function renderCart(){
-
-const box =
-document.getElementById("cartItems");
-
-if(!cart.length){
-
-box.innerHTML =
-'<p style="padding:20px 0;text-align:center">Your cart is empty.</p>';
-
-document.getElementById("cartTotal")
-.textContent="0";
-
-return;
-
-}
-
-let total=0;
-
-box.innerHTML = cart.map(item => {
-
-const p =
-products.find(x => x.id === item.id);
-
-if(!p)return "";
-
-total += p.price * item.qty;
-
-return `
-
-<div class="cart-item">
-
-<div class="cart-icon">
-${p.icon}
-</div>
-
-<div class="cart-details">
-
-<b>${p.name}</b>
-
-<div>
-₦${money(p.price)}
-</div>
-
-<div class="qty">
-
-<button onclick="changeQty(${p.id},-1)">
-−
-</button>
-
-<span>
-${item.qty}
-</span>
-
-<button onclick="changeQty(${p.id},1)">
-+
+Place Order
 </button>
 
 <button
-class="remove-btn"
-onclick="removeItem(${p.id})"
+ class="btn secondary"
+ onclick="closeM('cartModal')"
 >
-Remove
+Close
 </button>
 
 </div>
 
-</div>
+<p id="cartMsg"></p>
 
 </div>
 
-`;
-
-}).join("");
-
-document.getElementById("cartTotal")
-.textContent =
-money(total);
-
-}
-
-
-function changeQty(id,amount){
-
-const item =
-cart.find(x => x.id === id);
-
-if(!item)return;
-
-item.qty += amount;
-
-if(item.qty <= 0){
-
-cart =
-cart.filter(x => x.id !== id);
-
-}
-
-saveCart();
-
-updateCartCount();
-
-renderCart();
-
-}
-
-
-function removeItem(id){
-
-cart =
-cart.filter(x => x.id !== id);
-
-saveCart();
-
-updateCartCount();
-
-renderCart();
-
-}
-
-
-/* =====================================================
-   PRODUCT CHECKOUT
-===================================================== */
-
-function checkout(){
-
-if(!cart.length){
-
-alert("Your cart is empty.");
-
-return;
-
-}
-
-if(!currentUser){
-
-closeModal("cartModal");
-
-openLogin();
-
-alert(
-"Please login or create an account before checkout."
-);
-
-return;
-
-}
-
-let total=0;
-
-cart.forEach(item => {
-
-const product =
-products.find(p => p.id === item.id);
-
-if(product){
-
-total +=
-product.price * item.qty;
-
-}
-
-});
-
-payWithPaystack(
-total,
-"order",
-"NovaStore Order"
-);
-
-}
-
-
-/* =====================================================
-   PAYSTACK PAYMENT
-===================================================== */
-
-function payWithPaystack(amount,type,title){
-
-if(typeof PaystackPop === "undefined"){
-
-alert(
-"Paystack could not load. Please check your internet connection and try again."
-);
-
-return;
-
-}
-
-if(!currentUser){
-
-openLogin();
-
-alert(
-"Please login before making a payment."
-);
-
-return;
-
-}
-
-if(!amount || amount < 100){
-
-alert(
-"Minimum payment amount is ₦100."
-);
-
-return;
-
-}
-
-const handler =
-PaystackPop.setup({
-
-key:PAYSTACK_PUBLIC_KEY,
-
-email:currentUser.email,
-
-amount:Math.round(amount * 100),
-
-currency:"NGN",
-
-ref:
-"NOVASTORE_" +
-Date.now() +
-"_" +
-Math.floor(Math.random()*10000),
-
-metadata:{
-
-custom_fields:[
-
-{
-display_name:"Customer",
-variable_name:"customer",
-value:currentUser.name
-},
-
-{
-display_name:"Payment Type",
-variable_name:"payment_type",
-value:type
-}
-
-]
-
-},
-
-callback:function(response){
-
-paymentSuccessful(
-amount,
-type,
-title,
-response.reference
-);
-
-},
-
-onClose:function(){
-
-alert(
-"Payment window closed."
-);
-
-}
-
-});
-
-handler.openIframe();
-
-}
-
-
-/* =====================================================
-   PAYMENT SUCCESS
-===================================================== */
-
-function paymentSuccessful(
-amount,
-type,
-title,
-reference
-){
-
-if(type === "deposit"){
-
-balance += Number(amount);
-
-localStorage.setItem(
-"novaBalance",
-balance
-);
-
-updateBalance();
-
-closeModal("depositModal");
-
-alert(
-"Test payment successful!\n\nReference: " +
-reference
-);
-
-return;
-
-}
-
-
-if(type === "order"){
-
-const order = {
-
-id:"NS" + Date.now(),
-
-date:new Date().toLocaleString(),
-
-amount:amount,
-
-reference:reference,
-
-items:cart.map(item => {
-
-const p =
-products.find(x => x.id === item.id);
-
-return {
-
-name:p.name,
-
-qty:item.qty,
-
-price:p.price
-
-};
-
-})
-
-};
-
-orders.unshift(order);
-
-localStorage.setItem(
-"novaOrders",
-JSON.stringify(orders)
-);
-
-cart=[];
-
-saveCart();
-
-updateCartCount();
-
-closeModal("cartModal");
-
-alert(
-"Test payment successful!\n\nOrder ID: " +
-order.id
-);
-
-}
-
-}
-
-
-/* =====================================================
-   DEPOSIT
-===================================================== */
-
-function openDeposit(){
-
-if(!currentUser){
-
-openLogin();
-
-alert(
-"Please login or create an account before making a deposit."
-);
-
-return;
-
-}
-
-updateBalance();
-
-document.getElementById("depositModal")
-.style.display="flex";
-
-}
-
-
-function startDeposit(fromModal=false){
-
-if(!currentUser){
-
-openLogin();
-
-alert(
-"Please login or create an account before depositing."
-);
-
-return;
-
-}
-
-let amount;
-
-if(fromModal){
-
-amount =
-Number(
-document.getElementById("modalDepositAmount")
-.value
-);
-
-}else{
-
-amount =
-Number(
-document.getElementById("depositAmount")
-.value
-);
-
-}
-
-if(!amount || amount < 100){
-
-alert(
-"Please enter at least ₦100."
-);
-
-return;
-
-}
-
-payWithPaystack(
-amount,
-"deposit",
-"NovaStore Deposit"
-);
-
-}
-
-
-function updateBalance(){
-
-document.getElementById("balanceAmount")
-.textContent =
-money(balance);
-
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-function searchProducts(){
-
-applyFilters();
-
-goTo("products");
-
-}
-
-
-function applyFilters(){
-
-const q =
-document.getElementById("searchInput")
-.value
-.toLowerCase()
-.trim();
-
-renderProducts(
-
-products.filter(p =>
-
-(
-currentCategory === "All" ||
-p.cat === currentCategory
-)
-
-&&
-
-(
-!q ||
-p.name.toLowerCase().includes(q) ||
-p.cat.toLowerCase().includes(q) ||
-p.desc.toLowerCase().includes(q)
-)
-
-)
-
-);
-
-}
-
-
-document.getElementById("searchInput")
-.addEventListener(
-"input",
-applyFilters
-);
-
-
-/* =====================================================
-   CATEGORIES
-===================================================== */
-
-function filterCategory(cat,btn){
-
-currentCategory=cat;
-
-document.querySelectorAll(".cat")
-.forEach(x =>
-x.classList.remove("active")
-);
-
-btn.classList.add("active");
-
-applyFilters();
-
-goTo("products");
-
-}
-
-
-/* =====================================================
-   LOGIN / REGISTER
-===================================================== */
-
-function openLogin(){
-
-updateAuthUI();
-
-document.getElementById("loginModal")
-.style.display="flex";
-
-}
-
-
-function toggleAuth(){
-
-registerMode=!registerMode;
-
-document.getElementById("authTitle")
-.textContent =
-registerMode
-?
-"Create a NovaStore Account"
-:
-"Login to NovaStore";
-
-document.getElementById("nameGroup")
-.style.display =
-registerMode
-?
-"block"
-:
-"none";
-
-document.getElementById("nameInput")
-.required =
-registerMode;
-
-document.getElementById("authButton")
-.textContent =
-registerMode
-?
-"Create Account"
-:
-"Login";
-
-document.getElementById("switchBox")
-.innerHTML =
-registerMode
-?
-'Already have an account? <a onclick="toggleAuth()">Login</a>'
-:
-'Don\'t have an account? <a onclick="toggleAuth()">Create one</a>';
-
-}
-
-
-function handleAuth(e){
-
-e.preventDefault();
-
-const email =
-document.getElementById("emailInput")
-.value
-.trim();
-
-const password =
-document.getElementById("passwordInput")
-.value;
-
-if(password.length < 6){
-
-alert(
-"Password must contain at least 6 characters."
-);
-
-return;
-
-}
-
-const name =
-document.getElementById("nameInput")
-.value
-.trim()
-||
-email.split("@")[0];
-
-currentUser={
-
-name:name,
-
-email:email
-
-};
-
-localStorage.setItem(
-"novaUser",
-JSON.stringify(currentUser)
-);
-
-alert(
-
-registerMode
-?
-"Account created successfully."
-:
-"Login successful."
-
-);
-
-registerMode=false;
-
-document.getElementById("authForm")
-.reset();
-
-updateAuthUI();
-
-closeModal("loginModal");
-
-}
-
-
-function updateAuthUI(){
-
-const account =
-document.getElementById("accountText");
-
-if(currentUser){
-
-account.textContent =
-currentUser.name || "Account";
-
-}else{
-
-account.textContent="Login";
-
-}
-
-const box =
-document.getElementById("loggedInBox");
-
-if(currentUser){
-
-box.style.display="block";
-
-box.innerHTML=`
-
-<div class="account">
-
-Logged in as
-<b>${escapeHtml(currentUser.name)}</b>
-
-<br>
-
-${escapeHtml(currentUser.email)}
-
-<br><br>
-
-<button
-onclick="logout()"
-style="
-background:#111827;
-color:#fff;
-padding:8px 12px;
-border-radius:6px
-"
->
-Logout
-</button>
-
 </div>
 
-`;
 
-document.getElementById("authForm")
-.style.display="none";
+<script type="module">
 
-document.getElementById("switchBox")
-.style.display="none";
 
-}else{
-
-box.style.display="none";
-
-document.getElementById("authForm")
-.style.display="block";
-
-document.getElementById("switchBox")
-.style.display="block";
-
+import {
+ initializeApp
 }
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-updateBalance();
 
+import {
+ getDatabase,
+ ref,
+ onValue,
+ push,
+ set
 }
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-function logout(){
-
-currentUser=null;
-
-localStorage.removeItem("novaUser");
-
-updateAuthUI();
-
-closeModal("loginModal");
-
-alert("You have been logged out.");
-
+import {
+ getAuth,
+ onAuthStateChanged,
+ signInWithEmailAndPassword,
+ createUserWithEmailAndPassword
 }
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-/* =====================================================
-   ORDERS
-===================================================== */
+const firebaseConfig={
 
-function openOrders(){
+ apiKey:
+ "AIzaSyCNrU3igTkkcQ0Z6Zq1dluKw_s_3yHovE",
 
-if(!currentUser){
+ authDomain:
+ "novastore-6fd18.firebaseapp.com",
 
-openLogin();
+ databaseURL:
+ "https://novastore-6fd18-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-alert(
-"Please login to view your orders."
-);
+ projectId:
+ "novastore-6fd18",
 
-return;
+ storageBucket:
+ "novastore-6fd18.firebasestorage.app",
 
-}
+ messagingSenderId:
+ "783420364153",
 
-renderOrders();
+ appId:
+ "1:783420364153:web:1b56b655e3e804726d8ba8",
 
-document.getElementById("ordersModal")
-.style.display="flex";
-
-}
-
-
-function renderOrders(){
-
-const box =
-document.getElementById("ordersList");
-
-if(!orders.length){
-
-box.innerHTML =
-`
-<p style="text-align:center;color:#777;padding:20px">
-You don't have any orders yet.
-</p>
-`;
-
-return;
-
-}
-
-box.innerHTML =
-orders.map(order => `
-
-<div class="order">
-
-<strong>
-Order ${escapeHtml(order.id)}
-</strong>
-
-<br>
-
-<small>
-${escapeHtml(order.date)}
-</small>
-
-<br><br>
-
-<strong>
-Total: ₦${money(order.amount)}
-</strong>
-
-<br>
-
-<small>
-Payment reference:
-${escapeHtml(order.reference)}
-</small>
-
-<br><br>
-
-${order.items.map(item => `
-
-<div style="font-size:14px;margin-top:5px">
-
-${escapeHtml(item.name)}
-× ${item.qty}
-
-</div>
-
-`).join("")}
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =====================================================
-   SECURITY HELPER
-===================================================== */
-
-function escapeHtml(value){
-
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-
-/* =====================================================
-   MODALS
-===================================================== */
-
-function closeModal(id){
-
-document.getElementById(id)
-.style.display="none";
-
-}
-
-
-window.onclick=function(e){
-
-if(e.target.classList.contains("modal-bg")){
-
-e.target.style.display="none";
-
-}
+ measurementId:
+ "G-Q760SBLPLT"
 
 };
 
 
-/* =====================================================
-   START WEBSITE
-===================================================== */
+const app=
+initializeApp(firebaseConfig);
 
-renderProducts();
 
-updateCartCount();
+const db=
+getDatabase(app);
 
-updateAuthUI();
 
-updateBalance();
+const auth=
+getAuth(app);
+
+
+let products={};
+
+let cart=
+JSON.parse(
+ localStorage.getItem("novaCart")||"[]"
+);
+
+let user=null;
+
+
+const money=n=>
+"₦"+Number(n||0)
+.toLocaleString("en-NG");
+
+
+const safe=s=>
+String(s??"")
+.replace(
+ /[&<>"']/g,
+ c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#039;"
+ }[c])
+);
+
+
+onValue(
+ ref(db,"products"),
+ snapshot=>{
+
+  products=
+  snapshot.val()||{};
+
+  renderCats();
+
+  render();
+
+ }
+);
+
+
+onAuthStateChanged(
+ auth,
+ u=>{
+
+  user=u;
+
+  account.textContent=
+  u?"Account":"Login";
+
+ }
+);
+
+
+function renderCats(){
+
+ let old=
+ category.value;
+
+ let categories=
+ [
+  ...new Set(
+   Object.values(products)
+   .map(p=>p.category)
+   .filter(Boolean)
+  )
+ ];
+
+
+ category.innerHTML=
+ '<option value="all">All categories</option>'+
+ categories
+ .map(
+  x=>`<option>${safe(x)}</option>`
+ )
+ .join("");
+
+
+ category.value=
+ categories.includes(old)
+ ?old
+ :"all";
+
+}
+
+
+function render(){
+
+ let q=
+ search.value.toLowerCase();
+
+ let c=
+ category.value;
+
+
+ let list=
+ Object.entries(products)
+ .filter(
+  ([id,p])=>
+  (p.name||"")
+  .toLowerCase()
+  .includes(q)
+  &&
+  (c==="all"||p.category===c)
+  &&
+  p.available!==false
+ );
+
+
+ productsBox.innerHTML=
+ list.length
+
+ ?
+
+ list.map(
+ ([id,p])=>`
+
+ <article class="card">
+
+ <div class="pic">
+
+ ${
+  p.image
+
+  ?
+
+  `<img
+  src="${safe(p.image)}"
+  onerror="this.style.display='none'"
+  >`
+
+  :
+
+  "🛍️"
+ }
+
+ </div>
+
+
+ <div class="info">
+
+ <div class="cat">
+
+ ${safe(p.category||"General")}
+
+ </div>
+
+
+ <div class="name">
+
+ ${safe(p.name)}
+
+ </div>
+
+
+ ${
+  p.oldPrice
+
+  ?
+
+  `<div class="old">
+  ${money(p.oldPrice)}
+  </div>`
+
+  :
+
+  ""
+ }
+
+
+ <div class="price">
+
+ ${money(p.price)}
+
+ </div>
+
+
+ <small>
+
+ ${safe(
+  p.description||
+  "Available now"
+ )}
+
+ </small>
+
+
+ <button
+ class="btn add"
+ onclick="add('${id}')"
+ >
+
+ Add to Cart
+
+ </button>
+
+ </div>
+
+ </article>
+
+ `
+ ).join("")
+
+ :
+
+ "<p>No products found.</p>";
+
+}
+
+
+const productsBox=
+document.getElementById("products");
+
+
+search.oninput=
+render;
+
+
+category.onchange=
+render;
+
+
+window.add=id=>{
+
+ let item=
+ cart.find(x=>x.id===id);
+
+
+ if(item){
+
+  item.qty++;
+
+ }else{
+
+  cart.push({
+   id:id,
+   qty:1
+  });
+
+ }
+
+
+ save();
+
+ alert("Added to cart");
+
+};
+
+
+function save(){
+
+ localStorage.setItem(
+  "novaCart",
+  JSON.stringify(cart)
+ );
+
+
+ count.textContent=
+ cart.reduce(
+  (a,x)=>a+x.qty,
+  0
+ );
+
+}
+
+
+window.openCart=()=>{
+
+ cartItems.innerHTML=
+ cart.length
+
+ ?
+
+ cart.map(
+ x=>{
+
+  let p=
+  products[x.id];
+
+  if(!p)return"";
+
+
+  return `
+
+  <div class="cartrow">
+
+  <span>
+
+  ${safe(p.name)}
+
+  <br>
+
+  ${money(p.price)}
+  × ${x.qty}
+
+  </span>
+
+
+  <span>
+
+  <button
+  class="btn secondary"
+  onclick="qty('${x.id}',-1)"
+  >
+  −
+  </button>
+
+  <button
+  class="btn secondary"
+  onclick="qty('${x.id}',1)"
+  >
+  +
+  </button>
+
+  </span>
+
+  </div>
+
+  `;
+
+ }).join("")
+
+ :
+
+ "<p>Your cart is empty.</p>";
+
+
+ let totalAmount=
+ cart.reduce(
+  (a,x)=>
+  a+
+  (products[x.id]?.price||0)*
+  x.qty,
+  0
+ );
+
+
+ total.textContent=
+ "Total: "+
+ money(totalAmount);
+
+
+ cartMsg.textContent="";
+
+
+ cartModal.classList.add("show");
+
+};
+
+
+window.qty=(id,n)=>{
+
+ let item=
+ cart.find(x=>x.id===id);
+
+
+ if(item){
+
+  item.qty+=n;
+
+
+  if(item.qty<1){
+
+   cart=
+   cart.filter(
+    y=>y.id!==id
+   );
+
+  }
+
+ }
+
+
+ save();
+
+ openCart();
+
+};
+
+
+window.checkout=async()=>{
+
+ if(!cart.length){
+
+  cartMsg.textContent=
+  "Your cart is empty.";
+
+  return;
+
+ }
+
+
+ if(!user){
+
+  cartMsg.textContent=
+  "Please login first.";
+
+  return;
+
+ }
+
+
+ let items=
+ cart.map(
+ x=>({
+
+  productId:x.id,
+
+  name:
+  products[x.id]?.name||"",
+
+  price:
+  Number(
+   products[x.id]?.price||0
+  ),
+
+  quantity:x.qty
+
+ })
+ );
+
+
+ let totalAmount=
+ items.reduce(
+  (a,x)=>
+  a+
+  x.price*x.quantity,
+  0
+ );
+
+
+ let orderRef=
+ push(ref(db,"orders"));
+
+
+ await set(
+  orderRef,
+  {
+
+   userId:
+   user.uid,
+
+   email:
+   user.email,
+
+   items:
+   items,
+
+   total:
+   totalAmount,
+
+   status:
+   "pending",
+
+   createdAt:
+   Date.now()
+
+  }
+ );
+
+
+ cart=[];
+
+ save();
+
+
+ cartMsg.textContent=
+ "Order placed successfully.";
+
+};
+
+
+window.openAccount=()=>{
+
+ accountModal.classList.add("show");
+
+};
+
+
+window.closeM=id=>{
+
+ document
+ .getElementById(id)
+ .classList.remove("show");
+
+};
+
+
+window.login=async()=>{
+
+ try{
+
+  await signInWithEmailAndPassword(
+   auth,
+   email.value,
+   password.value
+  );
+
+
+  accountMsg.textContent=
+  "Login successful.";
+
+
+  setTimeout(
+   ()=>closeM("accountModal"),
+   600
+  );
+
+
+ }catch(e){
+
+  accountMsg.textContent=
+  e.message;
+
+ }
+
+};
+
+
+window.register=async()=>{
+
+ try{
+
+  let r=
+  await createUserWithEmailAndPassword(
+   auth,
+   email.value,
+   password.value
+  );
+
+
+  await set(
+   ref(db,"users/"+r.user.uid),
+   {
+
+    email:
+    r.user.email,
+
+    createdAt:
+    Date.now()
+
+   }
+  );
+
+
+  accountMsg.textContent=
+  "Account created successfully.";
+
+
+  setTimeout(
+   ()=>closeM("accountModal"),
+   600
+  );
+
+
+ }catch(e){
+
+  accountMsg.textContent=
+  e.message;
+
+ }
+
+};
+
+
+save();
 
 </script>
 
